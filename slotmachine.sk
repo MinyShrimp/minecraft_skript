@@ -55,7 +55,7 @@ command /slotmachine:
 
         set slot 0 of current inventory of player to gray stained glass pane named "돌" with lore "30,000원"
         set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "170,000원"
-        set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,000,000원"
+        set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,500,000원"
 
 on inventory click:
     if inventory name of player's current inventory is "룰렛":
