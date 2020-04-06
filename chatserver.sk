@@ -5,7 +5,9 @@ command /chatserver:
     trigger:
         open chest with 1 rows named "채팅 서버 목록" to player
         loop 9 times:
-            format slot %loop-index% - 1 of player with gray stained glass pane named ""
+            set {_s} to loop-number
+            remove 1 from {_s}
+            format slot {_s} of player with gray stained glass pane named "" with lore ""
         format slot 0 of player with beacon named "전체 채팅"
         format slot 1 of player with white wool named "도박 채팅"
         format slot 8 of player with barrier named "닫기" to close
