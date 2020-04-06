@@ -1,0 +1,67 @@
+command /slotmachine:
+    trigger:
+        open chest with 1 rows named "룰렛" to player
+        loop 9 times:
+            format slot %loop-index% - 1 of player with gray stained glass pane named ""
+        loop 3 times:
+            format slot %loop-index% + 2 of player with diamond named ""
+        format slot 7 of player with oak button named "&e룰렛돌리기"
+
+on inventory click:
+    if name of clicked item is "&e룰렛돌리기":
+        if {slot.%player%.isRun} is not set:
+            if player's money >= 10000:
+                set {slot.%player%.isRun} to "True"
+
+                # remove 10000 from player's money
+                execute player command "pay mc_shrimp 10000"
+            else:
+                send "소지 금액이 [10,000] 이하 입니다."
+        else:
+            delete {slot.%player%.isRun}
+
+every 10 tick:
+    if {slot.%player%.isRun} is set:
+        if {slot.%player%.count} is not set:
+            set {slot.%player%.count} to 0
+            set {slot.%player%.max_count} to random integer between 10 and 20
+
+        loop 3 times:
+            set {_num.%player%} to random integer between 0 and 100
+            if {_num.%player%} <= 50:
+                format slot %loop-index% + 2 of player with stone named ""
+                set {slot.%player%.numbers::%loop-index%} to 0 
+            else if {_num.%player%} <= 80:
+                format slot %loop-index% + 2 of player with emerald named ""
+                set {slot.%player%.numbers::%loop-index%} to 1
+            else:
+                format slot %loop-index% + 2 of player with diamond named ""
+                set {slot.%player%.numbers::%loop-index%} to 2
+        
+        if {slot.%player%.count} >= {slot.%player%.max_count}:
+            delete {slot.%player%.count}
+            delete {slot.%player%.isRun}
+
+            if {slot.%player%.numbers::1} == {slot.%player%.numbers::2} and {slot.%player%.numbers::1} == {slot.%player%.numbers::3}:
+                if {slot.%player%.numbers::1} == 0:
+                    add 70000 to player's money
+                    ## 시스템 변경 시 아래 구문 주석 처리
+                    execute command "eco take mc_shrimp 70000"
+                    loop all players:
+                        send "[%player%]님이 7배 슬롯에 당첨되었습니다!!"
+                else if {slot.%player%.numbers::1} == 1:
+                    add 270000 to player's money
+                    ## 시스템 변경 시 아래 구문 주석 처리
+                    execute command "eco take mc_shrimp 270000"
+                    loop all players:
+                        send "[%player%]님이 27배 슬롯에 당첨되었습니다!!"
+                else if {slot.%player%.numbers::1} == 2:
+                    add 1200000 to player's money
+                    ## 시스템 변경 시 아래 구문 주석 처리
+                    execute command "eco take mc_shrimp 1200000"
+                    loop all players:
+                        send "[%player%]님이 120배 슬롯에 당첨되었습니다!!!"
+                else:
+                    send "꽝"
+        else:
+            add 1 to {slot.%player%.count}

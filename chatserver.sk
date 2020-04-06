@@ -1,0 +1,28 @@
+variables:
+    {cs.%player%.channel} = 0
+
+command /chatserver:
+    trigger:
+        open chest with 1 rows named "채팅 서버 목록" to player
+        loop 9 times:
+            format slot %loop-index% - 1 of player with gray stained glass pane named ""
+        format slot 0 of player with beacon named "전체 채팅"
+        format slot 1 of player with white wool named "도박 채팅"
+        format slot 8 of player with barrier named "닫기" to close
+
+on inventory click:
+    if name of clicked item is "전체 채팅":
+        set {cs.%player%.channel} to 0
+        send "전체 채팅으로 이동했습니다." to player
+    
+    if name of clicked item is "도박 채팅":
+        set {cs.%player%.channel} to 1
+        send "도박 채팅방으로 이동했습니다." to player
+
+on chat:
+    if {cs.%player%.channel} == 1:
+        cancel event
+        loop all players:
+            if {cs.%loop-player%.channel} == 1:
+                set {_p} to "%loop-player%"
+                send "&f[&cS&f]%loop-player%: %message%" to {_p}
