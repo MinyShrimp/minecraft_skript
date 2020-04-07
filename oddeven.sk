@@ -4,7 +4,7 @@ variables:
     {oddeven.%player%.count} = 0
     {oddeven.%player%.bat} = 10000
 
-command /oddeveninfo <number>:
+command /oddeveninfo:
     aliases: /홀짝정보, /ghfWkrwjdqh
     trigger:
         send "============================================"
@@ -55,70 +55,74 @@ command /oddeven:
 on inventory click:
     if inventory name of player's current inventory is "홀짝":
         cancel event
-        if clicked slot is 40:
-            set {oddeven.%player%.count} to 0
+        if player's money >= {oddeven.%player%.bat}:
+            if clicked slot is 40:
+                set {oddeven.%player%.count} to 0
 
-            set {_o} to {oddeven.%player%.balance} * 0.9
-            set {_i} to {oddeven.%player%.balance} * 0.1
+                set {_o} to {oddeven.%player%.balance} * 0.9
+                set {_i} to {oddeven.%player%.balance} * 0.1
 
-            add {oddeven.%player%.balance} to player's money
+                add {oddeven.%player%.balance} to player's money
 
-            send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 10%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
-            stop
-        else:
-            set {_num.%player%} to random integer between 0 to 1
-            loop 4 times:
+                send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 10%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
+                stop
+            else:
+                set {_num.%player%} to random integer between 0 to 1
                 loop 4 times:
-                    set {_t} to loop-value-1
-                    remove 1 from {_t}
-                    set {_t} to {_t} * 9
-                    add loop-value-2 to {_t}
+                    loop 4 times:
+                        set {_t} to loop-value-1
+                        remove 1 from {_t}
+                        set {_t} to {_t} * 9
+                        add loop-value-2 to {_t}
 
-                    set {_x} to {_t} - 1
-                    set {_y} to {_t} + 4
+                        set {_x} to {_t} - 1
+                        set {_y} to {_t} + 4
 
-                    if clicked slot is {_x}:
-                        if {oddeven.%player%.count} is 0:
-                            add {oddeven.%player%.bat} to {oddeven.%player%.balance}
-                            remove {oddeven.%player%.bat} from player's money
-                        
-                        if {_num.%player%} is 0:
-                            send "당첨!"
+                        if clicked slot is {_x}:
+                            if {oddeven.%player%.count} is 0:
+                                add {oddeven.%player%.bat} to {oddeven.%player%.balance}
+                                remove {oddeven.%player%.bat} from player's money
                             
-                            add 1 to {oddeven.%player%.count}
-                            add {oddeven.%player%.bat} * {oddeven.%player%.count} to {oddeven.%player%.balance}
-                            remove {oddeven.%player%.bat} * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
+                            if {_num.%player%} is 0:
+                                send "당첨!"
+                                
+                                add 1 to {oddeven.%player%.count}
+                                add {oddeven.%player%.bat} * {oddeven.%player%.count} to {oddeven.%player%.balance}
+                                remove {oddeven.%player%.bat} * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
 
-                            if {oddeven.%player%.count} >= 4:
-                                broadcast "&f[&c%player%&f]님이 현재 &c'홀짝'&f &l연속 %{oddeven.%player%.count}%회&r&f째 당첨 중!!"
+                                if {oddeven.%player%.count} >= 4:
+                                    broadcast "&f[&c%player%&f]님이 현재 &c'홀짝'&f &l연속 %{oddeven.%player%.count}%회&r&f째 당첨 중!!"
 
-                            set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
-                        else:
-                            send "꽝~"
-                            set {oddeven.%player%.count} to 0
-                            add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
-                            set {oddeven.%player%.balance} to 0
+                                set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
+                            else:
+                                send "꽝~"
+                                set {oddeven.%player%.count} to 0
+                                add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
+                                set {oddeven.%player%.balance} to 0
 
-                            set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
-                        stop
-                    else if clicked slot is {_y}:
-                        if {oddeven.%player%.count} is 0:
-                            add {oddeven.%player%.bat} to {oddeven.%player%.balance}
-                            remove {oddeven.%player%.bat} from player's money
-                        
-                        if {_num.%player%} is 1:
-                            send "당첨!"
+                                set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
+                            stop
+                        else if clicked slot is {_y}:
+                            if {oddeven.%player%.count} is 0:
+                                add {oddeven.%player%.bat} to {oddeven.%player%.balance}
+                                remove {oddeven.%player%.bat} from player's money
                             
-                            add 1 to {oddeven.%player%.count}
-                            add {oddeven.%player%.bat} * {oddeven.%player%.count} to {oddeven.%player%.balance}
-                            remove {oddeven.%player%.bat} * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
+                            if {_num.%player%} is 1:
+                                send "당첨!"
+                                
+                                add 1 to {oddeven.%player%.count}
+                                add {oddeven.%player%.bat} * {oddeven.%player%.count} to {oddeven.%player%.balance}
+                                remove {oddeven.%player%.bat} * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
 
-                            set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
-                        else:
-                            send "꽝~"
-                            set {oddeven.%player%.count} to 0
-                            add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
-                            set {oddeven.%player%.balance} to 0
+                                set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
+                            else:
+                                send "꽝~"
+                                set {oddeven.%player%.count} to 0
+                                add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
+                                set {oddeven.%player%.balance} to 0
 
-                            set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
-                        stop
+                                set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
+                            stop
+        else:
+            send "돈이 부족합니다."
+            stop
