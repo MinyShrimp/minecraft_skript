@@ -10,10 +10,14 @@ command /oddeven:
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:
-                set {_x} to (loop-number-1 - 1) * 9 + (loop-number-2 - 1)
+                set {_x} to (loop-number-1 - 1) * 9
+                add loop-number-2 to {_x}
+                remove 1 from {_x}
                 set slot {_x} of current inventory of player to red stained glass pane named "홀"
 
-                set {_y} to (loop-number-1 - 1) * 9 + (loop-number-2 + 4)
+                set {_y} to (loop-number-1 - 1) * 9
+                add loop-number-2 to {_y}
+                add 4 to {_y}
                 set slot {_y} of current inventory of player to blue stained glass pane named "짝"
         loop 4 times:
             set {_x} to (loop-number - 1) * 9 + 4
@@ -41,18 +45,20 @@ on inventory click:
             send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 10%%를 제외한 %{_o}%원 이 지급되었습니다."
             stop
         else:
-            set {_num.%loop-player%} to random integer between 0 to 1
+            set {_num.%player%} to random integer between 0 to 1
             loop 4 times:
                 loop 4 times:
-                    set {_x} to (loop-number-1 - 1) * 9 + (loop-number-2 - 1)
-                    set {_y} to (loop-number-1 - 1) * 9 + (loop-number-2 + 4)
+                    set {_x} to (loop-number-1 - 1) * 9
+                    add (loop-number-2 - 1) to {_x}
+                    set {_y} to (loop-number-1 - 1) * 9
+                    add (loop-number-2 + 4) to {_y}
 
                     if clicked slot is {_x}:
                         if {oddeven.%player%.count} is 0:
                             add 10000 to {oddeven.%player%.balance}
                             remove 10000 from player's money
                         
-                        if {_num.%loop-player%} is 0:
+                        if {_num.%player%} is 0:
                             send "당첨!"
                             
                             add 1 to {oddeven.%player%.count}
@@ -76,7 +82,7 @@ on inventory click:
                             add 10000 to {oddeven.%player%.balance}
                             remove 10000 from player's money
                         
-                        if {_num.%loop-player%} is 1:
+                        if {_num.%player%} is 1:
                             send "당첨!"
                             
                             add 1 to {oddeven.%player%.count}
