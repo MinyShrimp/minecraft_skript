@@ -1,6 +1,5 @@
 
 variables:
-    {balance.mc_shrimp.casino} = 1000000000
     {oddeven.%player%.balance} = 0
     {oddeven.%player%.count} = 0
     {oddeven.%player%.bat} = 10000
