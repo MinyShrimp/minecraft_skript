@@ -1,8 +1,8 @@
 
 variables:
     {balance.mc_shrimp.casino} = 1000000000
-	{oddeven.%player%.balance} = 0
-    {oddeven.%player%.count}   = 0
+    {oddeven.%player%.balance} = 0
+    {oddeven.%player%.count} = 0
 
 command /oddeven:
     aliases: /홀짝, /ghfWkr
@@ -10,13 +10,13 @@ command /oddeven:
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:
-                set {_x} to (loop-number-1 - 1) * 9
-                add loop-number-2 to {_x}
+                set {_x} to (loop-value-1 - 1) * 9
+                add loop-value-2 to {_x}
                 remove 1 from {_x}
                 set slot {_x} of current inventory of player to red stained glass pane named "홀"
 
-                set {_y} to (loop-number-1 - 1) * 9
-                add loop-number-2 to {_y}
+                set {_y} to (loop-value-1 - 1) * 9
+                add loop-value-2 to {_y}
                 add 4 to {_y}
                 set slot {_y} of current inventory of player to blue stained glass pane named "짝"
         loop 4 times:
@@ -48,10 +48,10 @@ on inventory click:
             set {_num.%player%} to random integer between 0 to 1
             loop 4 times:
                 loop 4 times:
-                    set {_x} to (loop-number-1 - 1) * 9
-                    add (loop-number-2 - 1) to {_x}
-                    set {_y} to (loop-number-1 - 1) * 9
-                    add (loop-number-2 + 4) to {_y}
+                    set {_x} to (loop-value-1 - 1) * 9
+                    add (loop-value-2 - 1) to {_x}
+                    set {_y} to (loop-value-1 - 1) * 9
+                    add (loop-value-2 + 4) to {_y}
 
                     if clicked slot is {_x}:
                         if {oddeven.%player%.count} is 0:
@@ -63,7 +63,7 @@ on inventory click:
                             
                             add 1 to {oddeven.%player%.count}
                             add 10000 * {oddeven.%player%.count} to {oddeven.%player%.balance}
-                            remove 10000 * {oddeven.%player%.count} to {balance.mc_shrimp.casino}
+                            remove 10000 * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
 
                             if {oddeven.%player%.count} >= 4:
                                 broadcast "[%player%]님이 현재 '홀짝' 연속 %{oddeven.%player%.count}%회째 당첨 중!!"
@@ -87,7 +87,7 @@ on inventory click:
                             
                             add 1 to {oddeven.%player%.count}
                             add 10000 * {oddeven.%player%.count} to {oddeven.%player%.balance}
-                            remove 10000 * {oddeven.%player%.count} to {balance.mc_shrimp.casino}
+                            remove 10000 * {oddeven.%player%.count} from {balance.mc_shrimp.casino}
 
                             set slot 48 of current inventory of player to gold ingot named "현재 금액" with lore "%{oddeven.%player%.balance}%원"
                         else:
