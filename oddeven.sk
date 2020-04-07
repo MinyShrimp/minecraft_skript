@@ -28,6 +28,8 @@ command /oddevenconfig <number>:
 command /oddeven:
     aliases: /홀짝, /ghfWkr
     trigger:
+        #create a gui with virtual chest named "Title" with 3 rows
+        #open last gui to player
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:
@@ -54,10 +56,10 @@ command /oddeven:
         set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
 
 on inventory click:
-    if inventory name of player's current inventory is "홀짝":
+    if iname contains "홀짝":
         cancel event
         
-        if clicked slot is 40:
+        if clicked raw slot is 40:
             set {oddeven.%player%.count} to 0
 
             set {_o} to {oddeven.%player%.balance} * 0.95
@@ -84,7 +86,7 @@ on inventory click:
                         set {_x} to {_t} - 1
                         set {_y} to {_t} + 4
 
-                        if clicked slot is {_x}:
+                        if clicked raw slot is {_x}:
                             if {oddeven.%player%.count} is 0:
                                 add {oddeven.%player%.bat} to {oddeven.%player%.balance}
                                 remove {oddeven.%player%.bat} from player's money
@@ -113,7 +115,7 @@ on inventory click:
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
-                        else if clicked slot is {_y}:
+                        else if clicked raw slot is {_y}:
                             if {oddeven.%player%.count} is 0:
                                 add {oddeven.%player%.bat} to {oddeven.%player%.balance}
                                 remove {oddeven.%player%.bat} from player's money
@@ -127,9 +129,14 @@ on inventory click:
 
                                 add 1 to {oddeven.%player%.count}
 
+                                send "현재 금액: &e%{oddeven.%player%.balance}%원"
+
+                                if {oddeven.%player%.count} >= 4:
+                                    broadcast "&f[&c%player%&f]님이 현재 &c'홀짝'&f &l연속 %{oddeven.%player%.count}%회&r&f째 당첨 중!!"
+
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
                             else:
-                                send "꽝~"
+                                send "꽝"
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0

@@ -17,10 +17,14 @@ command /slotmachine:
         set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "150,000원"
         set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,500,000원"
 
+        set {slot.%player%.setnicname} to true
+
 on inventory click:
-    if inventory name of player's current inventory is "슬롯머신":
+    #if {slot.%player%.setnicname} is set:
+    if iname contains "슬롯머신":
         cancel event
-        if clicked slot is 7:
+        #if clicked slot is 7:
+        if clicked raw slot is 7:
             if {slot.%player%.isRun} is not set:
                 if player's money >= 10000:
                     if {balance.mc_shrimp.casino} < 100000:
@@ -33,6 +37,10 @@ on inventory click:
                     send "소지 금액이 [10,000] 이하 입니다."
             else:
                 send "연속해서 누르지 마세요."
+
+on inventory close:
+    if {slot.%player%.setnicname} is set:
+        clear {slot.%player%.setnicname}
 
 every 5 tick in "wild1":
     loop all players:
@@ -50,7 +58,7 @@ every 5 tick in "wild1":
                     if {_num.%loop-player%} is 1:
                         set slot {_s} of current inventory of loop-player to cobwebs named "&0"
                         set {slot.%loop-player%.numbers::%loop-number%} to 0 
-                    if {_num.%loop-player%} < 7:
+                    else if {_num.%loop-player%} < 7:
                         set slot {_s} of current inventory of loop-player to stone named "&0"
                         set {slot.%loop-player%.numbers::%loop-number%} to 1
                     else if {_num.%loop-player%} < 10:
