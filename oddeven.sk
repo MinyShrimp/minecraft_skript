@@ -62,7 +62,8 @@ on inventory click:
                 set {_o} to {oddeven.%player%.balance} * 0.9
                 set {_i} to {oddeven.%player%.balance} * 0.1
 
-                add {oddeven.%player%.balance} to player's money
+                add {_o} to player's money
+                add {_i} to {balance.mc_shrimp.casino}
 
                 send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 10%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
                 stop
