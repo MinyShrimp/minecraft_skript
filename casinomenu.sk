@@ -7,6 +7,17 @@ command /cmenu:
             set {_s} to loop-number
             remove 1 from {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        format slot 0 of player with diamond named "&f슬롯머신" to close then run [execute player command "/슬롯"]
-        format slot 1 of player with gold ingot named "&f홀짝" to close then run [execute player command "/홀짝"]
+        
+        set slot {_x} of current inventory of player to red stained glass pane named "&c홀"
+
+        set slot 0 of current inventory of player to diamond named "&f슬롯머신"
+        set slot 1 of current inventory of player to gold ingot named "&f홀짝"
         format slot 8 of player with barrier named "닫기" to close
+
+on inventory click:
+    if inventory name of player's current inventory is "Shrimp's Casino":
+        cancel event
+        if clicked slot is 0:
+            execute player command "/슬롯"
+        if clicked slot is 1:
+            execute player command "/홀짝"

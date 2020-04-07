@@ -48,7 +48,7 @@ command /oddeven:
             set {_x} to (loop-number + 35)
             set slot {_x} of current inventory of player to gray stained glass pane named "&0"
 
-        set slot 40 of current inventory of player to diamond named "&a출금" with lore "&f출금 시 수수료 10%%"
+        set slot 40 of current inventory of player to diamond named "&a출금" with lore "&f출금 시 수수료 5%%"
         set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f맞으면 2배 틀리면 0배" and "&f계속 맞으면 당첨 금액 2배씩 증가"
         set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 홀짝 선택시 금액 1만원 지출"
         set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
@@ -60,13 +60,13 @@ on inventory click:
         if clicked slot is 40:
             set {oddeven.%player%.count} to 0
 
-            set {_o} to {oddeven.%player%.balance} * 0.9
-            set {_i} to {oddeven.%player%.balance} * 0.1
+            set {_o} to {oddeven.%player%.balance} * 0.95
+            set {_i} to {oddeven.%player%.balance} * 0.05
 
             add {_o} to player's money
             add {_i} to {balance.mc_shrimp.casino}
 
-            send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 10%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
+            send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 5%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
 
             set {oddeven.%player%.balance} to 0
             set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
@@ -103,7 +103,7 @@ on inventory click:
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
                             else:
-                                send "꽝~"
+                                send "꽝"
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
