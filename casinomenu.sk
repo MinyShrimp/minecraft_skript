@@ -1,0 +1,12 @@
+
+command /cmenu:
+    aliases: /도박메뉴, /ehqkrapsb
+    trigger:
+        open chest with 1 rows named "Shrimp's Casino" to player
+        loop 9 times:
+            set {_s} to loop-number
+            remove 1 from {_s}
+            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+        format slot 0 of player with diamond named "&f슬롯머신" to close then run [execute player command "/슬롯"]
+        format slot 1 of player with gold ingot named "&f홀짝" to close then run [execute player command "/홀짝"]
+        format slot 8 of player with barrier named "닫기" to close
