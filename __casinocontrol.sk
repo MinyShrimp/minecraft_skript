@@ -30,13 +30,6 @@ command /casinocontrol [<text>] [<text>]:
 					remove {_num} from {balance.mc_shrimp.casino}
 					send "잔고 : %{balance.mc_shrimp.casino}%원"
 					stop
-			if arg 1 is "reload":
-				execute console command "/skript reload slotmachine"
-				execute console command "/skript reload oddeven"
-				execute console command "/skript reload finder"
-				execute console command "/skript reload casinomenu"
-				message "리로드 완료"
-				stop
 			if arg 1 is "개장":
 				execute console command "/skript enable slotmachine"
 				execute console command "/skript enable oddeven"
