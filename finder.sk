@@ -72,7 +72,7 @@ command /findereasy:
         set slot 16 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
         format slot 17 of player with barrier named "닫기" to close
 
-        set {finder.%player%.isClick} to "fuckfuckfuck"
+        set {finder.%player%.isClick} to true
 
 command /findernormal:
     trigger:

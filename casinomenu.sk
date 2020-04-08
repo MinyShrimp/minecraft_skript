@@ -13,6 +13,8 @@ command /cmenu:
         set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&c공사중"
         format slot 8 of player with barrier named "닫기" to close
 
+        set {cmenu.%player%.isOpen} to true
+
 on inventory click:
     if iname contains "Shrimp's Casino":
         cancel event
@@ -28,3 +30,12 @@ on inventory click:
             close player's inventory
             wait 1 tick
             execute player command "/보물찾기"
+
+on inventory close:
+    if {cmenu.%player%.isOpen} is set:
+        clear {cmenu.%player%.isOpen}
+
+on script unload:
+    loop all players:
+        if {cmenu.%loop-player%.isOpen} is set:
+            close loop-player's inventory
