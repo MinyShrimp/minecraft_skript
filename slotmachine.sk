@@ -52,14 +52,15 @@ on inventory click:
                     set {slot.%player%.isRun} to "True"
                     add {slot.%player%.bat} to {balance.mc_shrimp.casino}
                     remove {slot.%player%.bat} from player's money
+                    set slot 7 of current inventory of player to air named "&e룰렛돌리기" with lore "돌아가는 중.."
                 else:
                     send "소지 금액이 [10,000] 이하 입니다."
             else:
                 send "연속해서 누르지 마세요."
 
-every 5 tick in "wild1":
+every 5 tick in "world":
     loop all players:
-        if loop-player is in world "wild1":
+        if loop-player is in world "world":
             if {slot.%loop-player%.isRun} is set:
                 if {slot.%loop-player%.count} is not set:
                     set {slot.%loop-player%.count} to 0
@@ -86,6 +87,7 @@ every 5 tick in "wild1":
                 if {slot.%loop-player%.count} >= {slot.%loop-player%.max_count}:
                     delete {slot.%loop-player%.count}
                     delete {slot.%loop-player%.isRun}
+                    set slot 7 of current inventory of loop-player to oak button named "&e룰렛돌리기" with lore "10,000원"
 
                     if {slot.%loop-player%.numbers::1} == {slot.%loop-player%.numbers::2} and {slot.%loop-player%.numbers::1} == {slot.%loop-player%.numbers::3}:
                         if {slot.%loop-player%.numbers::1} == 1:

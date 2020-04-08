@@ -11,7 +11,7 @@ command /chatserver:
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
 
         set slot 0 of current inventory of player to beacon named "&f전체 채팅"
-        set slot 1 of current inventory of player to emeraid named "&f도박 채팅"
+        set slot 1 of current inventory of player to emerald named "&f도박 채팅"
         format slot 8 of player with barrier named "닫기" to close
 
 on inventory click:
@@ -23,9 +23,9 @@ on inventory click:
             close player's inventory
 
             loop all players:
-            if {cs.%loop-player%.channel} == 0:
-                set {_p} to "%loop-player%"
-                send "&f[&c%loop-player%]&f님이 일반채팅방에 입장했습니다." to {_p}
+            if {cs.%player%.channel} == 0:
+                set {_p} to "%player%"
+                broadcast "&f[&c%player%]&f님이 일반채팅방에 입장했습니다." to {_p}
 
         if clicked raw slot is 1:
             set {cs.%player%.channel} to 1
@@ -33,9 +33,9 @@ on inventory click:
             close player's inventory
 
             loop all players:
-            if {cs.%loop-player%.channel} == 1:
-                set {_p} to "%loop-player%"
-                send "&f[&c%loop-player%]&f님이 도박채팅방에 입장했습니다." to {_p}
+            if {cs.%player%.channel} == 1:
+                set {_p} to "%player%"
+                broadcast "&f[&c%player%]&f님이 도박채팅방에 입장했습니다." to {_p}
             
 on chat:
     if {cs.%player%.channel} == 1:
