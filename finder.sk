@@ -47,25 +47,19 @@ command /findereasy:
             set {_s} to loop-number
             remove 1 from {_s}
             set slot {_s} of current inventory of player to chest named "뭘까요?"
-
-            if loop-number <= 3:
-                set {finder.easy.%player%.chest::%loop-number%} to 1
-            else:
-                set {finder.easy.%player%.chest::%loop-number%} to 0
+            set {finder.easy.%player%.chest::%loop-number%} to 0
 
         loop 9 times:
             set {_s} to loop-number
             add 8 to {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
         
-        set {_n} to random integer from 20 to 100
-        loop {_n} times:
+        set {_c} to 0
+        while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.easy.%player%.chest::*}
-            set {_y} to random integer from 1 to number of {finder.easy.%player%.chest::*}
-            if {_x} is not {_y}:
-                set {_t} to {finder.easy.%player%.chest::%{_x}%}
-                set {finder.easy.%player%.chest::%{_x}%} to {finder.easy.%player%.chest::%{_y}%}
-                set {finder.easy.%player%.chest::%{_y}%} to {_t}
+            if {finder.easy.%player%.chest::%{_x}%} is 0:
+                set 1 to {finder.easy.%player%.chest::%{_x}%}
+                add 1 to {_c}
 
         set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
         set slot 10 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 2배!"
@@ -83,25 +77,19 @@ command /findernormal:
             set {_s} to loop-number
             remove 1 from {_s}
             set slot {_s} of current inventory of player to chest named "뭘까요?"
-
-            if loop-number <= 3:
-                set {finder.normal.%player%.chest::%loop-number%} to 1
-            else:
-                set {finder.normal.%player%.chest::%loop-number%} to 0
+            set {finder.normal.%player%.chest::%loop-number%} to 0
         
         loop 9 times:
             set {_s} to loop-number
             add 26 to {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
         
-        set {_n} to random integer from 200 to 1000
-        loop {_n} times:
+        set {_c} to 0
+        while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.normal.%player%.chest::*}
-            set {_y} to random integer from 1 to number of {finder.normal.%player%.chest::*}
-            if {_x} is not {_y}:
-                set {_t} to {finder.normal.%player%.chest::%{_x}%}
-                set {finder.normal.%player%.chest::%{_x}%} to {finder.normal.%player%.chest::%{_y}%}
-                set {finder.normal.%player%.chest::%{_y}%} to {_t}
+            if {finder.normal.%player%.chest::%{_x}%} is 0:
+                set 1 to {finder.normal.%player%.chest::%{_x}%}
+                add 1 to {_c}
 
         set slot 27 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
         set slot 28 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 6배!"
@@ -119,25 +107,19 @@ command /finderhard:
             set {_s} to loop-number
             remove 1 from {_s}
             set slot {_s} of current inventory of player to chest named "뭘까요?"
-
-            if loop-number <= 3:
-                set {finder.hard.%player%.chest::%loop-number%} to 1
-            else:
-                set {finder.hard.%player%.chest::%loop-number%} to 0
+            set {finder.hard.%player%.chest::%loop-number%} to 0
 
         loop 9 times:
             set {_s} to loop-number
             add 44 to {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        
-        set {_n} to random integer from 200 to 1000
-        loop {_n} times:
+
+        set {_c} to 0
+        while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.hard.%player%.chest::*}
-            set {_y} to random integer from 1 to number of {finder.hard.%player%.chest::*}
-            if {_x} is not {_y}:
-                set {_t} to {finder.hard.%player%.chest::%{_x}%}
-                set {finder.hard.%player%.chest::%{_x}%} to {finder.hard.%player%.chest::%{_y}%}
-                set {finder.hard.%player%.chest::%{_y}%} to {_t}
+            if {finder.hard.%player%.chest::%{_x}%} is 0:
+                set 1 to {finder.hard.%player%.chest::%{_x}%}
+                add 1 to {_c}
 
         set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
         set slot 46 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 18배!"
@@ -155,25 +137,15 @@ command /finderveryhard:
             set {_s} to loop-number
             remove 1 from {_s}
             set slot {_s} of current inventory of player to chest named "뭘까요?"
-
-            if loop-number <= 1:
-                set {finder.vhard.%player%.chest::%loop-number%} to 1
-            else:
-                set {finder.vhard.%player%.chest::%loop-number%} to 0
+            set {finder.vhard.%player%.chest::%loop-number%} to 0
         
         loop 9 times:
             set {_s} to loop-number
             add 44 to {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
         
-        set {_n} to random integer from 200 to 1000
-        loop {_n} times:
-            set {_x} to random integer from 1 to number of {finder.vhard.%player%.chest::*}
-            set {_y} to random integer from 1 to number of {finder.vhard.%player%.chest::*}
-            if {_x} is not {_y}:
-                set {_t} to {finder.vhard.%player%.chest::%{_x}%}
-                set {finder.vhard.%player%.chest::%{_x}%} to {finder.vhard.%player%.chest::%{_y}%}
-                set {finder.vhard.%player%.chest::%{_y}%} to {_t}
+        set {_x} to random integer from 1 to number of {finder.vhard.%player%.chest::*}
+        set {finder.vhard.%player%.chest::%{_x}%} to 1
 
         set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
         set slot 46 of current inventory of player to book named "&d게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 40배!!!"
@@ -366,9 +338,8 @@ on inventory click:
             execute player command "/finderveryhard"
 
 on inventory close:
-    if icname contains "보물찾기-EASY":
-        if {finder.%player%.isClick} is set:
-            clear {finder.%player%.isClick}
+    if {finder.%player%.isClick} is set:
+        clear {finder.%player%.isClick}
 
 on script unload:
     loop all players:
