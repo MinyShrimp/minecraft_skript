@@ -44,7 +44,7 @@ command /oddeven:
         loop 4 times:
             set {_x} to (loop-number - 1) * 9 + 4
             set slot {_x} of current inventory of player to gray stained glass pane named "&0"
-        loop 9 times:
+        loop 18 times:
             set {_x} to (loop-number + 35)
             set slot {_x} of current inventory of player to gray stained glass pane named "&0"
 

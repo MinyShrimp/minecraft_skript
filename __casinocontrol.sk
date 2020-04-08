@@ -14,31 +14,40 @@ command /casinocontrol [<text>] [<text>]:
 				if player's money >= {_num}:
 					add {_num} to {balance.mc_shrimp.casino}
 					remove {_num} from player's money
-					message "%{_num}%원 충전 완료."
-					message "잔고 : %{balance.mc_shrimp.casino}%"
+					send "%{_num}%원 충전 완료."
+					send "잔고 : %{balance.mc_shrimp.casino}%"
 					stop
 			if arg 1 is "withdraw":
 				if arg 2 is "all":
 					add {balance.mc_shrimp.casino} to player's money
 					set {balance.mc_shrimp.casino} to 0
-					message "%{balance.mc_shrimp.casino}%원 출금 완료."
+					send "%{balance.mc_shrimp.casino}%원 출금 완료."
 					stop
 				set {_num} to arg-2 parsed as an number
 				if {balance.mc_shrimp.casino} >= {_num}:
 					add {_num} to player's money
+					send "%{_num}%원 출금 완료."
 					remove {_num} from {balance.mc_shrimp.casino}
-					message "%{_num}%원 출금 완료."
-					message "잔고 : %{balance.mc_shrimp.casino}%원"
+					send "잔고 : %{balance.mc_shrimp.casino}%원"
 					stop
+			if arg 1 is "reload":
+				execute console command "/skript reload slotmachine"
+				execute console command "/skript reload oddeven"
+				execute console command "/skript reload finder"
+				execute console command "/skript reload cmenu"
+				message "리로드 완료"
+				stop
 			if arg 1 is "개장":
 				execute console command "/skript enable slotmachine"
 				execute console command "/skript enable oddeven"
+				execute console command "/skript enable finder"
 				execute console command "/skript enable cmenu"
 				message "개장 완료."
 				stop
 			if arg 1 is "폐장":
 				execute console command "/skript disable slotmachine"
 				execute console command "/skript disable oddeven"
+				execute console command "/skript disable finder"
 				execute console command "/skript disable cmenu"
 				message "폐장 완료."
 				stop
