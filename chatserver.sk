@@ -37,7 +37,6 @@ on inventory click:
                 set {_p} to "%loop-player%"
                 send "&f[&c%loop-player%]&f님이 도박채팅방에 입장했습니다." to {_p}
             
-
 on chat:
     if {cs.%player%.channel} == 1:
         cancel event
