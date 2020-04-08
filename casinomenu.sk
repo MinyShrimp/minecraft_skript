@@ -10,7 +10,7 @@ command /cmenu:
 
         set slot 0 of current inventory of player to diamond named "&f슬롯머신"
         set slot 1 of current inventory of player to gold ingot named "&f홀짝"
-        set slot 2 of current inventory of player to chest named "&f보물찾기"
+        set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&c공사중"
         format slot 8 of player with barrier named "닫기" to close
 
 on inventory click:

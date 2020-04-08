@@ -34,9 +34,9 @@ command /finder:
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
 
         set slot 0 of current inventory of player to oak leaves named "&fEASY" with lore "&e2배"
-        set slot 1 of current inventory of player to oak plank named "&fNORMAL" with lore "&e4배"
-        set slot 2 of current inventory of player to oak log named "&fHARD" with lore "&e8배"
-        set slot 3 of current inventory of player to nether wart block log named "&fVERY HARD" with lore "&e16배"
+        set slot 1 of current inventory of player to oak plank named "&fNORMAL" with lore "&e4배" and "&c미구현"
+        set slot 2 of current inventory of player to oak log named "&fHARD" with lore "&e8배" and "&c미구현"
+        set slot 3 of current inventory of player to nether wart block log named "&fVERY HARD" with lore "&e16배" and "&c미구현"
         format slot 8 of player with barrier named "닫기" to close
 
 command /findereasy:
@@ -206,30 +206,32 @@ on inventory click:
         if {finder.%player%.isClick} is set:
             set {_click} to clicked raw slot
             send "DEBUG: %{_click}%"
-            if {_click} >= 0 and {_click} <= 8:
-                if player's balance >= {finder.%player%.bat}:
-                    remove {finder.%player%.bat} from player's balance
+            if {_click} >= 0:
+                if {_click} <= 8:
+                    if player's balance >= {finder.%player%.bat}:
+                        remove {finder.%player%.bat} from player's balance
 
-                    loop 9 times:
-                        set {_s} to loop-number
-                        remove 1 from {_s}
+                        loop 9 times:
+                            set {_s} to loop-number
+                            remove 1 from {_s}
 
-                        if {finder.%player%.chest::%{_s}%} == 1:
-                            set slot {_s} of current inventory of player to diamond named "&f당첨!!"
+                            if {finder.%player%.chest::%{_s}%} is 1:
+                                set slot {_s} of current inventory of player to diamond named "&f당첨!!"
+                            else:
+                                set slot {_s} of current inventory of player to cobwebs named "&f꽝.."
+                    
+                        set {_i} to {_click} - 1
+                        if {finder.%player%.chest::%{_i}%} is 1:
+                            set {_t} to {finder.%player%.bat} * 2
+                            send "&c당첨!! &f당첨금 [&e%{_t}%&f]원이 지급되었습니다."
+
+                            add {_t} to player's balance
+                            remove {finder.%player%.bat} from {balance.mc_shrimp.casino}
                         else:
-                            set slot {_s} of current inventory of player to cobwebs named "&f꽝.."
-                
-                    if {finder.%player%.chest::%{_click}%} == 1:
-                        set {_t} to {finder.%player%.bat} * 2
-                        send "&c당첨!! &f당첨금 [&e%{_t}%&f]원이 지급되었습니다."
+                            send "꽝.."
 
-                        add {_t} to player's balance
-                        remove {finder.%player%.bat} from {balance.mc_shrimp.casino}
+                        delete {finder.%player%.isClick}
                     else:
-                        send "꽝.."
-
-                    delete {finder.%player%.isClick}
-                else:
                     send "돈이 부족합니다."
         
         if clicked raw slot is 16:
