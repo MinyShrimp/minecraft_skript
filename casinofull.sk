@@ -2,6 +2,9 @@
 
 # values
 variables:
+    # casino control
+    {balance.mc_shrimp.casino} = 0
+
     # slotmachine
     {slot.%player%.bat} = 10000
 
@@ -14,7 +17,51 @@ variables:
     {finder.%player%.bat} = 10000
 
 # commands
-# - casinomenu
+# - casino control
+command /casinocontrol [<text>] [<text>]:
+	aliases: /ccontrol
+	trigger:
+		if player has permission "casino.mc_shrimp":
+			if arg 1 is "balance":
+				message "mc_shrimp 카지노 잔액 : %{balance.mc_shrimp.casino}%"
+				stop
+			if arg 1 is "deposit":
+				set {_num} to arg-2 parsed as an number
+				if player's money >= {_num}:
+					add {_num} to {balance.mc_shrimp.casino}
+					remove {_num} from player's money
+					send "%{_num}%원 충전 완료."
+					send "잔고 : %{balance.mc_shrimp.casino}%"
+					stop
+			if arg 1 is "withdraw":
+				if arg 2 is "all":
+					add {balance.mc_shrimp.casino} to player's money
+					set {balance.mc_shrimp.casino} to 0
+					send "%{balance.mc_shrimp.casino}%원 출금 완료."
+					stop
+				set {_num} to arg-2 parsed as an number
+				if {balance.mc_shrimp.casino} >= {_num}:
+					add {_num} to player's money
+					send "%{_num}%원 출금 완료."
+					remove {_num} from {balance.mc_shrimp.casino}
+					send "잔고 : %{balance.mc_shrimp.casino}%원"
+					stop
+			if arg 1 is "개장":
+				execute console command "/skript enable slotmachine"
+				execute console command "/skript enable oddeven"
+				execute console command "/skript enable finder"
+				execute console command "/skript enable casinomenu"
+				message "개장 완료."
+				stop
+			if arg 1 is "폐장":
+				execute console command "/skript disable slotmachine"
+				execute console command "/skript disable oddeven"
+				execute console command "/skript disable finder"
+				execute console command "/skript disable casinomenu"
+				message "폐장 완료."
+				stop
+		message "알 수 없는 명령어 입니다."
+# - casino menu
 command /cmenu:
     aliases: /도박메뉴, /ehqkrapsb
     trigger:
