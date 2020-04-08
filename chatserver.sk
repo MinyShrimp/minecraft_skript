@@ -20,9 +20,20 @@ on inventory click:
         if clicked raw slot is 0:
             set {cs.%player%.channel} to 0
             send "전체 채팅으로 이동했습니다."
+
+            loop all players:
+            if {cs.%loop-player%.channel} == 0:
+                set {_p} to "%loop-player%"
+                send "&f[&c%loop-player%]&f님이 일반채팅방에 입장했습니다." to {_p}
+
         if clicked raw slot is 1:
             set {cs.%player%.channel} to 1
             send "도박 채팅방으로 이동했습니다."
+
+            loop all players:
+            if {cs.%loop-player%.channel} == 1:
+                set {_p} to "%loop-player%"
+                send "&f[&c%loop-player%]&f님이 도박채팅방에 입장했습니다." to {_p}
 
 on chat:
     if {cs.%player%.channel} == 1:

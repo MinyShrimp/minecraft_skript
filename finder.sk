@@ -230,7 +230,7 @@ on inventory click:
                         else:
                             send "꽝.."
 
-                        delete {finder.%player%.isClick}
+                        clear {finder.%player%.isClick}
                     else:
                     send "돈이 부족합니다."
         
@@ -240,5 +240,11 @@ on inventory click:
             execute player command "/findereasy"
 
 on inventory close:
-    if {finder.%player%.isClick} is set:
-        clear {finder.%player%.isClick}
+    if icname contains "보물찾기-EASY":
+        if {finder.%player%.isClick} is set:
+            clear {finder.%player%.isClick}
+
+on script unload:
+    loop all players:
+        if {finder.%loop-player%.isClick} is set:
+            close loop-player's inventory

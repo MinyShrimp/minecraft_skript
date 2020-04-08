@@ -53,6 +53,8 @@ command /oddeven:
         set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 홀짝 선택시 금액 1만원 지출"
         set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
 
+        set {oddeven.%player%.isOpen} to true
+
 on inventory click:
     if iname contains "홀짝":
         cancel event
@@ -144,3 +146,12 @@ on inventory click:
             else:
                 send "돈이 부족합니다."
                 stop
+
+on inventory close:
+    if iname contains "홀짝":
+        clear {oddeven.%player%.isOpen}
+
+on script unload:
+    loop all players:
+        if {oddeven.%loop-player%.isOpen} is set:
+            close loop-player's inventory

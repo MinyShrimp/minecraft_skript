@@ -41,6 +41,8 @@ command /slotmachine:
         set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "150,000원"
         set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,500,000원"
 
+        set {slot.%player%.isOpen} to true
+
 on inventory click:
     if iname contains "슬롯머신":
         cancel event
@@ -102,3 +104,12 @@ every 5 tick in "wild1":
                             message "꽝" to loop-player
                 else:
                     add 1 to {slot.%loop-player%.count}
+
+on inventory close:
+    if {slot.%player%.isOpen} is set:
+        clear {slot.%player%.isOpen}
+
+on script unload:
+    loop all players:
+        if {slot.%loop-player%.isOpen} is set:
+            close loop-player's inventory
