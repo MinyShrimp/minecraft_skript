@@ -89,16 +89,16 @@ every 5 tick in "wild1":
 
                     if {slot.%loop-player%.numbers::1} == {slot.%loop-player%.numbers::2} and {slot.%loop-player%.numbers::1} == {slot.%loop-player%.numbers::3}:
                         if {slot.%loop-player%.numbers::1} == 1:
-                            add {slot.%player%.bat} to loop-player's money
-                            remove {slot.%player%.bat} from {balance.mc_shrimp.casino}
+                            add {slot.%loop-player%.bat} to loop-player's money
+                            remove {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
                             message "한번더!" to loop-player
                         else if {slot.%loop-player%.numbers::1} == 2:
-                            add 15 * {slot.%player%.bat} to loop-player's money
-                            remove 15 * {slot.%player%.bat} from {balance.mc_shrimp.casino}
+                            add 15 * {slot.%loop-player%.bat} to loop-player's money
+                            remove 15 * {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 15배 슬롯에 당첨되었습니다!!"
                         else if {slot.%loop-player%.numbers::1} == 3:
-                            add 150 * {slot.%player%.bat} to loop-player's money
-                            remove 150 * {slot.%player%.bat} from {balance.mc_shrimp.casino}
+                            add 150 * {slot.%loop-player%.bat} to loop-player's money
+                            remove 150 * {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 150배 슬롯에 당첨되었습니다!!!"
                         else:
                             message "꽝" to loop-player

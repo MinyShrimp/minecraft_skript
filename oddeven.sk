@@ -148,7 +148,7 @@ on inventory click:
                 stop
 
 on inventory close:
-    if iname contains "홀짝":
+    if icname contains "홀짝":
         clear {oddeven.%player%.isOpen}
 
 on script unload:
