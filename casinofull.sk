@@ -616,7 +616,7 @@ on inventory click:
 
 every 5 tick in "wild1":
     loop all players:
-        if loop-player is in world "wild":
+        if loop-player is in world "wild1":
             if {slot.%loop-player%.isRun} is set:
                 if {slot.%loop-player%.count} is not set:
                     set {slot.%loop-player%.count} to 0
