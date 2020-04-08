@@ -20,10 +20,8 @@ command /slotmachine:
         set {slot.%player%.setnicname} to true
 
 on inventory click:
-    #if {slot.%player%.setnicname} is set:
     if iname contains "슬롯머신":
         cancel event
-        #if clicked slot is 7:
         if clicked raw slot is 7:
             if {slot.%player%.isRun} is not set:
                 if player's money >= 10000:

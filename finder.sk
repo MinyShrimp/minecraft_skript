@@ -1,0 +1,89 @@
+
+variables:
+    {finder.%player%.bat} = 10000
+    
+command /finder:
+    aliases: /보물찾기, /qhanfckwrl
+    trigger:
+        open chest with 1 rows named "보물찾기 메뉴" to player
+
+        loop 9 times:
+            set {_s} to loop-number
+            remove 1 from {_s}
+            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+        set slot 0 of current inventory of player to oak leaves named "&fEASY"
+        set slot 1 of current inventory of player to oak plank named "&fNORMAL"
+        set slot 2 of current inventory of player to oak log named "&fHARD"
+        format slot 8 of player with barrier named "닫기" to close
+
+command /findereasy:
+    trigger:
+        open chest with 2 rows named "보물찾기-EASY" to player
+
+        loop 9 times:
+            set {_s} to loop-number
+            remove 1 from {_s}
+            set slot {_s} of current inventory of player to chest named "뭘까요?"
+
+            if loop-number <= 3:
+                set {finder.easy.%player%.chest::%loop-number%} to 1
+            else:
+                set {finder.easy.%player%.chest::%loop-number%} to 0
+        
+        set {_n} to random integer from 20 to 100
+        loop {_n} times:
+            set {_x} to random integer from 1 to number of {finder.easy.%player%.chest::*}
+            set {_y} to random integer from 1 to number of {finder.easy.%player%.chest::*}
+            if {_x} is not {_y}:
+                set {_t} to {finder.easy.%player%.chest::%{_x}%}
+                set {finder.easy.%player%.chest::%{_x}%} to {finder.easy.%player%.chest::%{_y}%}
+                set {finder.easy.%player%.chest::%{_y}%} to {_t}
+
+        set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
+        set slot 10 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 2배!"
+        set slot 16 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
+        format slot 17 of player with barrier named "닫기" to close
+
+        set {finder.easy.%player%.isClick} to 1
+
+on inventory click:
+    if iname contains "보물찾기 메뉴":
+        cancel event
+        if clicked raw slot is 0:
+            close player's inventory
+            wait 1 tick
+            execute player command "/findereasy"
+    
+    if iname contains "보물찾기-EASY":
+        cancel event
+        if {finder.easy.%player%.isClick} is set:
+            set {_click} to clicked raw slot
+
+            if {_click} >= 0 and {_click} <= 8:
+                remove {finder.%player%.bat} from {oddeven.%player%.balance}
+
+                loop 9 times:
+                    set {_s} to loop-number
+                    remove 1 from {_s}
+
+                    if {finder.easy.%player%.chest::%{_s}%} == 1:
+                        set slot {_s} of current inventory of player to diamond named "&f당첨!!"
+                    else:
+                        set slot {_s} of current inventory of player to cobwebs named "&f꽝.."
+            
+                if {finder.easy.%player%.chest::%{_click}%} == 1:
+                    set {_t} to {finder.%player%.bat} * 2
+                    send "&c당첨!! &f당첨금 [&e%{_t}%&f]원이 지급되었습니다."
+
+                    add {_t} to {oddeven.%player%.balance}
+                    remove {finder.%player%.bat} from {balance.mc_shrimp.casino}
+                else:
+                    send "꽝.."
+
+                delete {finder.easy.%player%.isClick}
+        
+        if clicked raw slot is 16:
+            close player's inventory
+            wait 1 tick
+            execute player command "/findereasy"

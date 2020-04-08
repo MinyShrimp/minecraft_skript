@@ -8,7 +8,7 @@ command /oddeveninfo:
     aliases: /홀짝정보, /ghfWkrwjdqh
     trigger:
         send "============================================"
-        send "                 홀짝 정보"
+        send "=                홀짝 정보"
         send "= 현재 배팅 금액 : %{oddeven.%player%.bat}%원"
         send "= /홀짝 : 게임"
         send "= /홀짝설정 <금액> : 배팅 금액 설정 (기본 1만원)"
@@ -28,8 +28,6 @@ command /oddevenconfig <number>:
 command /oddeven:
     aliases: /홀짝, /ghfWkr
     trigger:
-        #create a gui with virtual chest named "Title" with 3 rows
-        #open last gui to player
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:

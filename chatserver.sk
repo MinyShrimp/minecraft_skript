@@ -7,19 +7,22 @@ command /chatserver:
         loop 9 times:
             set {_s} to loop-number
             remove 1 from {_s}
-            format slot {_s} of player with gray stained glass pane named "" with lore ""
-        format slot 0 of player with beacon named "전체 채팅"
-        format slot 1 of player with white wool named "도박 채팅"
+
+            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+        set slot 0 of current inventory of player to beacon named "&f전체 채팅"
+        set slot 1 of current inventory of player to emeraid named "&f도박 채팅"
         format slot 8 of player with barrier named "닫기" to close
 
 on inventory click:
-    if name of clicked item is "전체 채팅":
-        set {cs.%player%.channel} to 0
-        send "전체 채팅으로 이동했습니다." to player
-    
-    if name of clicked item is "도박 채팅":
-        set {cs.%player%.channel} to 1
-        send "도박 채팅방으로 이동했습니다." to player
+    if iname contains "채팅 서버 목록":
+        cancel event
+        if clicked raw slot is 0:
+            set {cs.%player%.channel} to 0
+            send "전체 채팅으로 이동했습니다."
+        if clicked raw slot is 1:
+            set {cs.%player%.channel} to 1
+            send "도박 채팅방으로 이동했습니다."
 
 on chat:
     if {cs.%player%.channel} == 1:
