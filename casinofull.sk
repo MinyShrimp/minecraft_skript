@@ -71,9 +71,9 @@ command /cmenu:
             remove 1 from {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
 
-        set slot 0 of current inventory of player to diamond named "&f슬롯머신"
-        set slot 1 of current inventory of player to gold ingot named "&f홀짝"
-        set slot 2 of current inventory of player to chest named "&f보물찾기"
+        set slot 0 of current inventory of player to diamond named "&f슬롯머신" with lore "&f/슬롯설정 <금액> : 배팅금액 변경 (5,000~100,000)"
+        set slot 1 of current inventory of player to gold ingot named "&f홀짝" with lore "&f/홀짝설정 <금액> : 배팅금액 변경 (5,000~100,000)"
+        set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&f/보물찾기설정 <금액> : 배팅금액 변경 (5,000~100,000)"
         format slot 8 of player with barrier named "닫기" to close
 
         set {cmenu.%player%.isOpen} to true
