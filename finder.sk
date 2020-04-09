@@ -29,7 +29,7 @@ command /finder:
         if {balance.mc_shrimp.casino} <= 500000:
             send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
             stop
-            
+
         open chest with 1 rows named "보물찾기 메뉴" to player
 
         loop 9 times:
@@ -66,7 +66,7 @@ command /findereasy:
         while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.easy.%player%.chest::*}
             if {finder.easy.%player%.chest::%{_x}%} is 0:
-                set 1 to {finder.easy.%player%.chest::%{_x}%}
+                set {finder.hard.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
@@ -100,7 +100,7 @@ command /findernormal:
         while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.normal.%player%.chest::*}
             if {finder.normal.%player%.chest::%{_x}%} is 0:
-                set 1 to {finder.normal.%player%.chest::%{_x}%}
+                set {finder.hard.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 27 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
@@ -134,7 +134,7 @@ command /finderhard:
         while {_c} < 3:
             set {_x} to random integer from 1 to number of {finder.hard.%player%.chest::*}
             if {finder.hard.%player%.chest::%{_x}%} is 0:
-                set 1 to {finder.hard.%player%.chest::%{_x}%}
+                set {finder.hard.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
