@@ -251,9 +251,9 @@ command /findereasy:
         
         set {_c} to 0
         while {_c} < 3:
-            set {_x} to random integer from 1 to number of {finder.easy.%player%.chest::*}
+            set {_x} to random integer from 1 to 9
             if {finder.easy.%player%.chest::%{_x}%} is 0:
-                set {finder.vhard.%player%.chest::%{_x}%} to 1
+                set {finder.easy.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
@@ -287,9 +287,9 @@ command /findernormal:
         
         set {_c} to 0
         while {_c} < 3:
-            set {_x} to random integer from 1 to number of {finder.normal.%player%.chest::*}
+            set {_x} to random integer from 1 to 27
             if {finder.normal.%player%.chest::%{_x}%} is 0:
-                set {finder.vhard.%player%.chest::%{_x}%} to 1
+                set {finder.normal.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 27 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
@@ -323,9 +323,9 @@ command /finderhard:
         
         set {_c} to 0
         while {_c} < 3:
-            set {_x} to random integer from 1 to number of {finder.hard.%player%.chest::*}
+            set {_x} to random integer from 1 to 45
             if {finder.hard.%player%.chest::%{_x}%} is 0:
-                set {finder.vhard.%player%.chest::%{_x}%} to 1
+                set {finder.hard.%player%.chest::%{_x}%} to 1
                 add 1 to {_c}
 
         set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
@@ -358,7 +358,7 @@ command /finderveryhard:
             add 44 to {_s}
             set slot {_s} of current inventory of player to gray stained glass pane named "&0"
         
-        set {_x} to random integer from 1 to number of {finder.vhard.%player%.chest::*}
+        set {_x} to random integer from 1 to 45
         set {finder.vhard.%player%.chest::%{_x}%} to 1
 
         set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
