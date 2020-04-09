@@ -47,17 +47,11 @@ command /casinocontrol [<text>] [<text>]:
 					send "잔고 : %{balance.mc_shrimp.casino}%원"
 					stop
 			if arg 1 is "개장":
-				execute console command "/skript enable slotmachine"
-				execute console command "/skript enable oddeven"
-				execute console command "/skript enable finder"
-				execute console command "/skript enable casinomenu"
+                set {scasino.isOpen} to true
 				message "개장 완료."
 				stop
 			if arg 1 is "폐장":
-				execute console command "/skript disable slotmachine"
-				execute console command "/skript disable oddeven"
-				execute console command "/skript disable finder"
-				execute console command "/skript disable casinomenu"
+				celar {scasino.isOpen}
 				message "폐장 완료."
 				stop
 		message "알 수 없는 명령어 입니다."
@@ -103,6 +97,13 @@ command /smconfig <number>:
 command /slotmachine:
     aliases: /슬롯, /tmffht
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+        
         open chest with 1 rows named "슬롯머신" to player
         loop 9 times:
             set {_s} to loop-number
@@ -113,11 +114,9 @@ command /slotmachine:
             add 2 to {_s}
             set slot {_s} of current inventory of player to diamond named "&0"
         set slot 7 of current inventory of player to oak button named "&e룰렛돌리기" with lore "10,000원"
-
         set slot 0 of current inventory of player to gray stained glass pane named "돌" with lore "10,000원"
         set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "150,000원"
         set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,500,000원"
-
         set {slot.%player%.isOpen} to true
 
 # - oddeven
@@ -145,6 +144,13 @@ command /oddevenconfig <number>:
 command /oddeven:
     aliases: /홀짝, /ghfWkr
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:
@@ -197,6 +203,13 @@ command /finderconfig <number>:
 command /finder:
     aliases: /보물찾기, /qhanfckwrl
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 1 rows named "보물찾기 메뉴" to player
 
         loop 9 times:
@@ -212,6 +225,13 @@ command /finder:
 
 command /findereasy:
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
         open chest with 2 rows named "보물찾기-EASY" to player
 
         loop 9 times:
@@ -237,11 +257,17 @@ command /findereasy:
         set slot 15 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
         set slot 16 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
         format slot 17 of player with barrier named "닫기" to close
-
         set {finder.%player%.isClick} to true
 
 command /findernormal:
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 4 rows named "보물찾기-NORMAL" to player
 
         loop 27 times:
@@ -267,11 +293,17 @@ command /findernormal:
         set slot 33 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
         set slot 34 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
         format slot 35 of player with barrier named "닫기" to close
-
         set {finder.%player%.isClick} to "fuckfuckfuck"
 
 command /finderhard:
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 6 rows named "보물찾기-HARD" to player
 
         loop 45 times:
@@ -302,6 +334,13 @@ command /finderhard:
 
 command /finderveryhard:
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 6 rows named "보물찾기-VERYHARD" to player
 
         loop 45 times:
@@ -699,6 +738,8 @@ on inventory close:
 on script unload:
     loop all players:
         # casinomenu
+        if {scasino.isOpen} is set:
+            clear {scasino.isOpen}
         if {cmenu.%loop-player%.isOpen} is set:
             close loop-player's inventory
         # slotmachine

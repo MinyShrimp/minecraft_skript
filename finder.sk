@@ -26,6 +26,10 @@ command /finderconfig <number>:
 command /finder:
     aliases: /보물찾기, /qhanfckwrl
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
         open chest with 1 rows named "보물찾기 메뉴" to player
 
         loop 9 times:
@@ -41,6 +45,10 @@ command /finder:
 
 command /findereasy:
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 2 rows named "보물찾기-EASY" to player
 
         loop 9 times:
@@ -71,6 +79,10 @@ command /findereasy:
 
 command /findernormal:
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 4 rows named "보물찾기-NORMAL" to player
 
         loop 27 times:
@@ -101,6 +113,10 @@ command /findernormal:
 
 command /finderhard:
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 6 rows named "보물찾기-HARD" to player
 
         loop 45 times:
@@ -131,6 +147,10 @@ command /finderhard:
 
 command /finderveryhard:
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+
         open chest with 6 rows named "보물찾기-VERYHARD" to player
 
         loop 45 times:

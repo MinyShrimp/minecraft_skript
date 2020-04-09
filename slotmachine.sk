@@ -26,6 +26,10 @@ command /smconfig <number>:
 command /slotmachine:
     aliases: /슬롯, /tmffht
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
         open chest with 1 rows named "슬롯머신" to player
         loop 9 times:
             set {_s} to loop-number

@@ -28,6 +28,10 @@ command /oddevenconfig <number>:
 command /oddeven:
     aliases: /홀짝, /ghfWkr
     trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
         open chest with 6 rows named "홀짝" to player
         loop 4 times:
             loop 4 times:
