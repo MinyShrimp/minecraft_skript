@@ -1,4 +1,5 @@
-# 최종 업데이트 날짜 : 20-04-09
+# 최종 업데이트 날짜 : 20-04-09 09:30
+# 문의 ksk7584@gmail.com
 
 # values
 variables:
@@ -59,6 +60,9 @@ command /casinocontrol [<text>] [<text>]:
 command /cmenu:
     aliases: /도박메뉴, /ehqkrapsb
     trigger:
+        if {scasino.isOpen} is not set:
+            send "점검 중입니다."
+            stop
         open chest with 1 rows named "Shrimp's Casino" to player
         loop 9 times:
             set {_s} to loop-number
