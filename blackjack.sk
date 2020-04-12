@@ -1,0 +1,336 @@
+
+variables:
+    {blackjack.%player%.bat} = 10000
+    {blackjack.%player%.index} = 1
+    {blackjack.%player%.addAll} = 0
+    {blackjack.%player%.dealer.index} = 1
+    {blackjack.%player%.dealer.addAll} = 0
+
+command /blackjackinfo:
+    aliases: /블랙잭정보, /qmfforworwjdqh
+    trigger:
+        send "============================================"
+        send "=                블랙잭 정보"
+        send "= 현재 배팅 금액 : %{blackjack.%player%.bat}%원"
+        send "= /블랙잭 : 게임"
+        send "= /블랙잭설정 <금액> : 배팅 금액 설정 (기본 1만원)"
+        send "============================================"
+
+command /blackjackconfig <number>:
+    aliases: /블랙잭설정, /qmfforwortjfwjd
+    trigger:
+        if arg 1 < 5000:
+            send "배팅 금액은 5,000 ~ 1,000,000원 제한입니다."
+        else if arg 1 > 1000000:
+            send "배팅 금액은 5,000 ~ 1,000,000원 제한입니다."
+        else:
+            set {blackjack.%player%.bat} to arg 1
+            send "배팅 금액이 %{blackjack.%player%.bat}%원으로 수정되었습니다."
+
+command /blackjack:
+    aliases: /블랙잭, /qmfforwor
+    trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+        
+        open chest with 6 rows named "블랙잭" to player
+
+        loop 6 times:
+            set {_x} to (loop-number - 1) * 9 + 4
+            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+
+        loop 18 times:
+            set {_x} to (loop-number - 1) + 36
+            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+
+        set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f21에 가장 가까운 사람이 승리" and "&f21 초과 시 패배"
+        set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 힛 선택 시 배팅금액(&e%{blackjack.%player%.bat}%&f) 지출"
+        set slot 47 of current inventory of player to book named "&e게임 룰" with lore "&fA: 1or11" and "&f2~10: 숫자" and "&fJQK: 10"
+
+        set slot 48 of current inventory of player to diamond named "&a힛" with lore "&f카드 한 장 더 받기"
+        set slot 50 of current inventory of player to diamond named "&a스테이" with lore "&f카드 더이상 받지 않기"
+
+        set slot 52 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
+        set slot 53 of current inventory of player to gold ingot named "&6배팅 금액" with lore "&f%{blackjack.%player%.bat}%"
+
+command /bdealer:
+    trigger:
+        while true:
+            set {blackjack.%player%.dealer.cards::%{blackjack.%player%.dealer.index}%} to random integer from 1 to 13
+            add 1 to {blackjack.%player%.dealer.index}
+            set {_i} to 0
+            set {_j} to 0
+            set {blackjack.%player%.dealer.addAll} to 0
+            loop {blackjack.%player%.dealer.cards::*}:
+                set {_t} to {_j} * 9
+                add {_i} to {_t}
+                add 5 to {_t}
+                if loop-value == 1:
+                    add 11 to {blackjack.%player%.dealer.addAll}
+                else if loop-value >= 11:
+                    add 10 to {blackjack.%player%.dealer.addAll}
+                else:
+                    add loop-value to {blackjack.%player%.dealer.addAll}
+                
+                if loop-value is 1:
+                    set slot {_t} of current inventory of player to black wool named "&eA"
+                else if loop-value is 2:
+                    set slot {_t} of current inventory of player to red wool named "&e2"
+                else if loop-value is 3:
+                    set slot {_t} of current inventory of player to orange wool named "&e3"
+                else if loop-value is 4:
+                    set slot {_t} of current inventory of player to yellow wool named "&e4"
+                else if loop-value is 5:
+                    set slot {_t} of current inventory of player to lime wool named "&e5"
+                else if loop-value is 6:
+                    set slot {_t} of current inventory of player to green wool named "&e6"
+                else if loop-value is 7:
+                    set slot {_t} of current inventory of player to light blue wool named "&e7"
+                else if loop-value is 8:
+                    set slot {_t} of current inventory of player to blue wool named "&e8"
+                else if loop-value is 9:
+                    set slot {_t} of current inventory of player to pink wool named "&e9"
+                else if loop-value is 10:
+                    set slot {_t} of current inventory of player to magenta wool named "&e10"
+                else if loop-value is 11:
+                    set slot {_t} of current inventory of player to brown wool named "&eJ"
+                else if loop-value is 12:
+                    set slot {_t} of current inventory of player to light gray wool named "&eQ"
+                else if loop-value is 13:
+                    set slot {_t} of current inventory of player to gray wool named "&eK"
+                    
+                add 1 to {_i}
+                if {_i} >= 4:
+                    add 1 to {_j}
+                    set {_i} to 0
+            if {blackjack.%player%.dealer.addAll} >= 16:
+                set {blackjack.%player%.dealer.addAll} to 0
+                loop {blackjack.%player%.dealer.cards::*}:
+                    if loop-value == 1:
+                        add 1 to {blackjack.%player%.dealer.addAll}
+                    else if loop-value >= 11:
+                        add 10 to {blackjack.%player%.dealer.addAll}
+                    else:
+                        add loop-value to {blackjack.%player%.dealer.addAll}
+                if {blackjack.%player%.dealer.addAll} >= 16:
+                    exit 1 loop
+        set slot 35 of current inventory of player to book named "&e딜러 합계" with lore "&f%{blackjack.%player%.dealer.addAll}%"
+
+        send "-----------------------------------------------------"
+        send "&c플레이어&f(%{blackjack.%player%.addAll}%) / &9딜러&f(%{blackjack.%player%.dealer.addAll}%)"
+        if {blackjack.%player%.addAll} > 21:
+            if {blackjack.%player%.dealer.addAll} > 21:
+                send "결과: &e무승부"
+                add {blackjack.%player%.bat} to player's money
+                remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
+                send "현재 잔액 [&e%player's money%&f]원"
+            else:
+                send "결과: &9딜러 승"
+                send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+        else:
+            if {blackjack.%player%.dealer.addAll} > 21:
+                send "결과: &c플레이어 승"
+                add {blackjack.%player%.bat} * 2 to player's money
+                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+            else if {blackjack.%player%.dealer.addAll} > {blackjack.%player%.addAll}:
+                send "결과: &9딜러 승"
+                send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+            else if {blackjack.%player%.dealer.addAll} < {blackjack.%player%.addAll}:
+                send "결과: &c플레이어 승"
+                add {blackjack.%player%.bat} * 2 to player's money
+                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+            else if {blackjack.%player%.dealer.addAll} == {blackjack.%player%.addAll}:
+                send "결과: &e무승부"
+                add {blackjack.%player%.bat} to player's money
+                remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
+                send "현재 잔액 [&e%player's money%&f]원"
+            else:
+                send "결과: &9딜러 승"
+                send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+        send "-----------------------------------------------------"
+        set slot 49 of current inventory of player to cobwebs named "&e초기화"
+        set {blackjack.%player%.isDoInit} to true
+                
+command /bjreset:
+    trigger:
+        clear {blackjack.%player%.isPlay}
+        clear {blackjack.%player%.isDoInit}
+        clear {blackjack.%player%.cards::*}
+        clear {blackjack.%player%.dealer.cards::*}
+        set {blackjack.%player%.addAll} to 0
+        set {blackjack.%player%.dealer.addAll} to 0
+        set {blackjack.%player%.index} to 1
+        set {blackjack.%player%.dealer.index} to 1
+        set slot 49 of current inventory of player to gray stained glass pane named "&0"
+
+        set {_i} to 0
+        set {_j} to 0
+        loop 16 times:
+            set {_t} to {_j} * 9
+            add {_i} to {_t}
+            set {_t2} to {_t} + 5
+
+            set slot {_t} of current inventory of player to air
+            set slot {_t2} of current inventory of player to air
+
+            add 1 to {_i}
+            if {_i} >= 4:
+                add 1 to {_j}
+                set {_i} to 0
+
+on inventory click:
+    if iname contains "블랙잭":
+        cancel event
+
+        if clicked raw slot is 48:
+            # Hit
+            if {blackjack.%player%.isDoInit} is not set:
+                if {blackjack.%player%.isPlay} is not set:
+                    if player's balance < {blackjack.%player%.bat}:
+                        send "-----------------------------------------------------"
+                        send "금액이 부족합니다."
+                        send "현재 소지금액: %player's balance% / 현재 배팅금액: $%{blackjack.%player%.bat}%"
+                        send "-----------------------------------------------------"
+                        stop
+                    set {blackjack.%player%.isPlay} to true
+                    set {_t} to random integer from 1 to 13
+                    set {blackjack.%player%.dealer.cards::%{blackjack.%player%.dealer.index}%} to {_t}
+
+                    set {blackjack.%player%.cards::%{blackjack.%player%.index}%} to random integer from 1 to 13
+                    add 1 to {blackjack.%player%.index}
+
+                    if {_t} == 1:
+                        add 11 to {blackjack.%player%.dealer.addAll}
+                    else if {_t} >= 11:
+                        add 10 to {blackjack.%player%.dealer.addAll}
+                    else:
+                        add {_t} to {blackjack.%player%.dealer.addAll}
+                    add 1 to {blackjack.%player%.dealer.index}
+
+                    remove {blackjack.%player%.bat} from player's money
+                    add {blackjack.%player%.bat} to {balance.mc_shrimp.casino}
+                
+                set {blackjack.%player%.cards::%{blackjack.%player%.index}%} to random integer from 1 to 13
+                add 1 to {blackjack.%player%.index}
+
+                set {_i} to 0
+                set {_j} to 0
+                set {blackjack.%player%.addAll} to 0
+                loop {blackjack.%player%.cards::*}:
+                    set {_t} to {_j} * 9
+                    add {_i} to {_t}
+
+                    if loop-value == 1:
+                        add 11 to {blackjack.%player%.addAll}
+                    else if loop-value >= 11:
+                        add 10 to {blackjack.%player%.addAll}
+                    else:
+                        add loop-value to {blackjack.%player%.addAll}
+                    
+                    if loop-value is 1:
+                        set slot {_t} of current inventory of player to black wool named "&eA"
+                    else if loop-value is 2:
+                        set slot {_t} of current inventory of player to red wool named "&e2"
+                    else if loop-value is 3:
+                        set slot {_t} of current inventory of player to orange wool named "&e3"
+                    else if loop-value is 4:
+                        set slot {_t} of current inventory of player to yellow wool named "&e4"
+                    else if loop-value is 5:
+                        set slot {_t} of current inventory of player to lime wool named "&e5"
+                    else if loop-value is 6:
+                        set slot {_t} of current inventory of player to green wool named "&e6"
+                    else if loop-value is 7:
+                        set slot {_t} of current inventory of player to light blue wool named "&e7"
+                    else if loop-value is 8:
+                        set slot {_t} of current inventory of player to blue wool named "&e8"
+                    else if loop-value is 9:
+                        set slot {_t} of current inventory of player to pink wool named "&e9"
+                    else if loop-value is 10:
+                        set slot {_t} of current inventory of player to magenta wool named "&e10"
+                    else if loop-value is 11:
+                        set slot {_t} of current inventory of player to brown wool named "&eJ"
+                    else if loop-value is 12:
+                        set slot {_t} of current inventory of player to light gray wool named "&eQ"
+                    else if loop-value is 13:
+                        set slot {_t} of current inventory of player to gray wool named "&eK"
+                        
+                    add 1 to {_i}
+                    if {_i} >= 4:
+                        add 1 to {_j}
+                        set {_i} to 0
+                
+                set {_i} to 0
+                set {_j} to 0
+                loop {blackjack.%player%.dealer.cards::*}:
+                    set {_t} to {_j} * 9
+                    add {_i} to {_t}
+                    add 5 to {_t}
+                    
+                    if loop-value is 1:
+                        set slot {_t} of current inventory of player to black wool named "&eA"
+                    else if loop-value is 2:
+                        set slot {_t} of current inventory of player to red wool named "&e2"
+                    else if loop-value is 3:
+                        set slot {_t} of current inventory of player to orange wool named "&e3"
+                    else if loop-value is 4:
+                        set slot {_t} of current inventory of player to yellow wool named "&e4"
+                    else if loop-value is 5:
+                        set slot {_t} of current inventory of player to lime wool named "&e5"
+                    else if loop-value is 6:
+                        set slot {_t} of current inventory of player to green wool named "&e6"
+                    else if loop-value is 7:
+                        set slot {_t} of current inventory of player to light blue wool named "&e7"
+                    else if loop-value is 8:
+                        set slot {_t} of current inventory of player to blue wool named "&e8"
+                    else if loop-value is 9:
+                        set slot {_t} of current inventory of player to pink wool named "&e9"
+                    else if loop-value is 10:
+                        set slot {_t} of current inventory of player to magenta wool named "&e10"
+                    else if loop-value is 11:
+                        set slot {_t} of current inventory of player to brown wool named "&eJ"
+                    else if loop-value is 12:
+                        set slot {_t} of current inventory of player to light gray wool named "&eQ"
+                    else if loop-value is 13:
+                        set slot {_t} of current inventory of player to gray wool named "&eK"
+                        
+                    add 1 to {_i}
+                    if {_i} >= 4:
+                        add 1 to {_j}
+                        set {_i} to 0
+
+                send "-----------------------------------------------------"
+                send "&c플레이어&f(%{blackjack.%player%.addAll}%) / &9딜러&f(%{blackjack.%player%.dealer.addAll}%)"
+                send "-----------------------------------------------------"
+                if {blackjack.%player%.addAll} > 21:
+                    set {blackjack.%player%.addAll} to 0
+                    loop {blackjack.%player%.cards::*}:
+                        if loop-value == 1:
+                            add 1 to {blackjack.%player%.addAll}
+                        else if loop-value >= 11:
+                            add 10 to {blackjack.%player%.addAll}
+                        else:
+                            add loop-value to {blackjack.%player%.addAll}
+                    if {blackjack.%player%.addAll} >= 21:
+                        execute player command "/bdealer"
+                else if {blackjack.%player%.addAll} == 21:
+                    execute player command "/bdealer"
+                set slot 30 of current inventory of player to book named "&e유저 합계" with lore "&f%{blackjack.%player%.addAll}%"
+                set slot 35 of current inventory of player to book named "&e딜러 합계" with lore "&f%{blackjack.%player%.dealer.addAll}%"
+
+        if clicked raw slot is 49:
+            if {blackjack.%player%.isDoInit} is set:
+                execute player command "/bjreset"
+        if clicked raw slot is 50:
+            # Stay - 딜러의 턴
+            if {blackjack.%player%.isDoInit} is not set:
+                if {blackjack.%player%.isPlay} is set:
+                    execute player command "/bdealer"
+        if clicked raw slot is 52:
+            execute player command "/도박메뉴"
+
+on inventory close:
+    if {blackjack.%player%.isDoInit} is set:
+        execute player command "/bjreset"
