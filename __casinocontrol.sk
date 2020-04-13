@@ -34,6 +34,8 @@ command /casinocontrol [<text>] [<text>]:
                 execute console command "/skript enable slotmachine"
                 execute console command "/skript enable oddeven"
                 execute console command "/skript enable finder"
+                execute console command "/skript enable blackjack"
+                execute console command "/skript enable lotto"
                 execute console command "/skript enable casinomenu"
                 message "개장 완료."
                 stop
@@ -41,6 +43,8 @@ command /casinocontrol [<text>] [<text>]:
                 execute console command "/skript disable slotmachine"
                 execute console command "/skript disable oddeven"
                 execute console command "/skript disable finder"
+                execute console command "/skript disable blackjack"
+                execute console command "/skript disable lotto"
                 execute console command "/skript disable casinomenu"
                 message "폐장 완료."
                 stop

@@ -1,0 +1,122 @@
+
+variables:
+    {lotto.batting} = 0
+    {lotto.%player%.isChoice} = false
+    {lotto.%player%.choice} = 0
+    {lotto.%player%.bat} = 50000
+    {lotto.round} = 1
+    {lotto.count} = 0
+    {lotto.broadcastvalue} = 1000000
+
+command /lotto:
+    trigger:
+        if {balance.mc_shrimp.casino} <= 500000:
+            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+            stop
+            
+        open chest with 4 rows named "로또방" to player
+        loop 36 times:
+            set {_s} to loop-number
+            remove 1 from {_s}
+            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+        set slot  9 of current inventory of player to black wool named "&e1" with lore "&f현재 인원: %{lotto.pcounts::1}%명"
+        set slot 10 of current inventory of player to red wool named "&e2" with lore "&f현재 인원: %{lotto.pcounts::2}%명"
+        set slot 11 of current inventory of player to orange wool named "&e3" with lore "&f현재 인원: %{lotto.pcounts::3}%명"
+        set slot 12 of current inventory of player to yellow wool named "&e4" with lore "&f현재 인원: %{lotto.pcounts::4}%명"
+        set slot 13 of current inventory of player to lime wool named "&e5" with lore "&f현재 인원: %{lotto.pcounts::5}%명"
+        set slot 14 of current inventory of player to green wool named "&e6" with lore "&f현재 인원: %{lotto.pcounts::6}%명"
+        set slot 15 of current inventory of player to light blue wool named "&e7" with lore "&f현재 인원: %{lotto.pcounts::7}%명"
+        set slot 16 of current inventory of player to blue wool named "&e8" with lore "&f현재 인원: %{lotto.pcounts::8}%명"
+        set slot 17 of current inventory of player to pink wool named "&e9" with lore "&f현재 인원: %{lotto.pcounts::9}%명"
+
+        set slot 27 of current inventory of player to book named "&e게임 룰" with lore "&f1~9까지의 숫자 중 하나를 고릅니다." and "매 1시간마다 번호를 추첨하여 그 번호에 맞는 사람들에게" and "현재 모여 있는 돈을 드립니다."
+        set slot 33 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
+        set slot 34 of current inventory of player to gold ingot named "&6로또 가격" with lore "&f%{lotto.%player%.bat}%원"
+        set slot 35 of current inventory of player to gold ingot named "&6현재 총 금액" with lore "&f%{lotto.batting}%원"
+
+command /lottoreset:
+    trigger:
+        if player has permission "casino.mc_shrimp":
+            loop 9 times:
+                set {lotto.moneys::%loop-value%} to 0
+                set {lotto.pcounts::%loop-value%} to 0
+                clear {lotto.players::%loop-value%::*}
+            loop all players:
+                set {lotto.%loop-player%.isChoice} to false
+            set {lotto.batting} to 0
+            set {lotto.broadcastvalue} to 1000000
+            set {lotto.count} to 0
+        
+on inventory click:
+    if iname contains "로또방":
+        cancel event
+
+        loop 9 times:
+            set {_s} to loop-value
+            add 8 to {_s}
+            if clicked raw slot is {_s}:
+                if {lotto.%loop-player%.isChoice} is false:
+                    set {lotto.%loop-player%.isChoice} to true
+                    
+                    add {lotto.%player%.bat} to {lotto.moneys::%loop-value%}
+                    add {lotto.%player%.bat} to {lotto.batting}
+                    add 1 to {lotto.pcounts::%loop-value%}
+                    add "%player%" to {lotto.players::%loop-value%::*}
+
+                    if {lotto.batting} >= {lotto.broadcastvalue}:
+                        broadcast "로또 총 금액이 [$%{lotto.broadcastvalue}%]를 넘어섰습니다!!"
+                        broadcast "확인: /도박메뉴 => 로또"
+                        add 1000000 to {lotto.broadcastvalue}
+
+                    exit 1 loop
+                else:
+                    send "이미 [%{lotto.%player%.choice}%]번을 선택하셨습니다."
+                    exit 1 loop
+        
+        if clicked raw slot is 33:
+            execute player command "/도박메뉴"
+
+every 300 seconds in "world":
+    if {lotto.count} == 5:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 30분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 8:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 15분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 10:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 5분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 11:
+        set {_result} to random integer from 1 to 9
+
+        set {_b} to {lotto.batting} * 0.95
+        set {_t} to {lotto.batting} * 0.05
+        set {_a} to {lotto.batting} * 0.04 # 세금 1% 감안
+
+        set {_money} to {_b} / {lotto.pcounts::%{_result}%}
+        set {_su} to {_t} / {lotto.pcounts::%{_result}%}
+
+        add {_a} to {balance.mc_shrimp.casino}  # 실 이용료 4%
+        send "[로또] 수입금: %{_a}% / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+        loop {lotto.players::%{_result}%::*}:
+            add {_money} to {loop-value}'s balance
+
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과: &c%{_result}%&f / 당첨 인원: %{lotto.pcounts::%{_result}%}%명"
+        broadcast "총 배팅 금액: [$%{lotto.batting}%] / 1인당 지급액: $%{_money}%(수수료 5%%: %{_su}%)"
+        broadcast "-----------------------------------------------------"
+        execute console command "/lottoreset"
+
+        add 1 to {lotto.round}
+    else:
+        add 1 to {lotto.count}

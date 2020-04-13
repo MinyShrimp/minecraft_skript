@@ -125,31 +125,45 @@ command /bdealer:
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
         else:
             if {blackjack.%player%.dealer.addAll} > 21:
                 send "결과: &c플레이어 승"
-                add {blackjack.%player%.bat} * 2 to player's money
-                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                set {_t} to {blackjack.%player%.bat} * 2
+                add {_t} to player's money
+                remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} > {blackjack.%player%.addAll}:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} < {blackjack.%player%.addAll}:
                 send "결과: &c플레이어 승"
-                add {blackjack.%player%.bat} * 2 to player's money
-                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                set {_t} to {blackjack.%player%.bat} * 2
+                add {_t} to player's money
+                remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} == {blackjack.%player%.addAll}:
                 send "결과: &e무승부"
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
         send "-----------------------------------------------------"
         set slot 49 of current inventory of player to cobwebs named "&e초기화"
         set {blackjack.%player%.isDoInit} to true

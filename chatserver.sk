@@ -25,7 +25,7 @@ on inventory click:
             loop all players:
             if {cs.%player%.channel} == 0:
                 set {_p} to "%player%"
-                broadcast "&f[&c%player%]&f님이 일반채팅방에 입장했습니다." to {_p}
+                send "&f[&c%player%]&f님이 일반채팅방에 입장했습니다." to {_p}
 
         if clicked raw slot is 1:
             set {cs.%player%.channel} to 1
@@ -35,7 +35,7 @@ on inventory click:
             loop all players:
             if {cs.%player%.channel} == 1:
                 set {_p} to "%player%"
-                broadcast "&f[&c%player%]&f님이 도박채팅방에 입장했습니다." to {_p}
+                send "&f[&c%player%]&f님이 도박채팅방에 입장했습니다." to {_p}
             
 on chat:
     if {cs.%player%.channel} == 1:

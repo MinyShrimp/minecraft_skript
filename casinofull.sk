@@ -1,10 +1,11 @@
-# 최종 업데이트 날짜 : 20-04-12 21:38
+# 최종 업데이트 날짜 : 20-04-13 10:38
 # 문의 ksk7584@gmail.com
 
 # values
 variables:
-    # casino control
+    # __casinocontrol
     {balance.mc_shrimp.casino} = 0
+    {mc_shrimp.casino.isOpen} = false
 
     # slotmachine
     {slot.%player%.bat} = 10000
@@ -24,8 +25,16 @@ variables:
     {blackjack.%player%.dealer.index} = 1
     {blackjack.%player%.dealer.addAll} = 0
 
-# commands
-# - casino control
+    # lotto
+    {lotto.batting} = 0
+    {lotto.%player%.isChoice} = false
+    {lotto.%player%.choice} = 0
+    {lotto.%player%.bat} = 50000
+    {lotto.round} = 1
+    {lotto.count} = 0
+    {lotto.broadcastvalue} = 1000000
+
+# __casinocontrol
 command /casinocontrol [<text>] [<text>]:
     aliases: /ccontrol
     trigger:
@@ -55,36 +64,56 @@ command /casinocontrol [<text>] [<text>]:
                     send "잔고 : %{balance.mc_shrimp.casino}%원"
                     stop
             if arg 1 is "개장":
-                set {scasino.isOpen} to true
+                set {mc_shrimp.casino.isOpen} to true
                 message "개장 완료."
                 stop
             if arg 1 is "폐장":
-                clear {scasino.isOpen}
+                set {mc_shrimp.casino.isOpen} to false
+                execute console command "/shclose"
                 message "폐장 완료."
                 stop
         message "알 수 없는 명령어 입니다."
-# - casino menu
+
+command /shclose:
+    trigger:
+        if player has permission "casino.mc_shrimp":
+            loop all players:
+                if {cmenu.%loop-player%.isOpen} is set:
+                    close loop-player's inventory
+                if {slot.%loop-player%.isOpen} is set:
+                    close loop-player's inventory
+                if {oddeven.%loop-player%.isOpen} is set:
+                    close loop-player's inventory
+                if {finder.%loop-player%.isClick} is set:
+                    close loop-player's inventory
+                if {blackjack.%player%.isClick} is set:
+                    close loop-player's inventory
+                if {lotto.%player%.isOpen} is set:
+                    close loop-player's inventory
+        else:
+            message "알 수 없는 명령어 입니다."
+# menu
 command /cmenu:
     aliases: /도박메뉴, /ehqkrapsb
     trigger:
-        if {scasino.isOpen} is not set:
+        if {mc_shrimp.casino.isOpen} is true:
+            open chest with 1 rows named "Shrimp's Casino" to player
+            loop 9 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+            set slot 0 of current inventory of player to diamond named "&f슬롯머신" with lore "&f/슬롯설정 <금액> : 배팅금액 변경 (5,000~100,000)"
+            set slot 1 of current inventory of player to gold ingot named "&f홀짝" with lore "&f/홀짝설정 <금액> : 배팅금액 변경 (5,000~100,000)"
+            set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&f/보물찾기설정 <금액> : 배팅금액 변경 (5,000~100,000)"
+            set slot 3 of current inventory of player to white wool named "&f블랙잭" with lore "&f/블랙잭설정 <금액> : 배팅금액 변경 (5,000~1,000,000)"
+            format slot 8 of player with barrier named "닫기" to close
+
+            set {cmenu.%player%.isOpen} to true
+        else:
             send "점검 중입니다."
-            stop
-        open chest with 1 rows named "Shrimp's Casino" to player
-        loop 9 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
 
-        set slot 0 of current inventory of player to diamond named "&f슬롯머신" with lore "&f/슬롯설정 <금액> : 배팅금액 변경 (5,000~100,000)"
-        set slot 1 of current inventory of player to gold ingot named "&f홀짝" with lore "&f/홀짝설정 <금액> : 배팅금액 변경 (5,000~100,000)"
-        set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&f/보물찾기설정 <금액> : 배팅금액 변경 (5,000~100,000)"
-        set slot 3 of current inventory of player to white wool named "&f블랙잭" with lore "&f/새우블랙잭설정 <금액> : 배팅금액 변경 (5,000~1,000,000)"
-        format slot 8 of player with barrier named "닫기" to close
-
-        set {cmenu.%player%.isOpen} to true
-
-# - slotmachine
+# slotmachine
 command /sminfo:
     aliases: /슬롯정보, /tmffhtwjdqh
     trigger:
@@ -109,29 +138,31 @@ command /smconfig <number>:
 command /slotmachine:
     aliases: /슬롯, /tmffht
     trigger:
-        if {scasino.isOpen} is not set:
-            send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-        
-        open chest with 1 rows named "슬롯머신" to player
-        loop 9 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        loop 3 times:
-            set {_s} to loop-number
-            add 2 to {_s}
-            set slot {_s} of current inventory of player to diamond named "&0"
-        set slot 7 of current inventory of player to oak button named "&e룰렛돌리기" with lore "10,000원"
-        set slot 0 of current inventory of player to gray stained glass pane named "돌" with lore "10,000원"
-        set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "150,000원"
-        set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "1,500,000원"
-        set {slot.%player%.isOpen} to true
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+                
+            open chest with 1 rows named "슬롯머신" to player
+            loop 9 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+            loop 3 times:
+                set {_s} to loop-number
+                add 2 to {_s}
+                set slot {_s} of current inventory of player to diamond named "&0"
+            set slot 7 of current inventory of player to oak button named "&e룰렛돌리기" with lore "%{slot.%player%.bat}%원"
 
-# - oddeven
+            set slot 0 of current inventory of player to gray stained glass pane named "돌" with lore "한번더!"
+            set slot 1 of current inventory of player to gray stained glass pane named "에메랄드" with lore "15배"
+            set slot 2 of current inventory of player to gray stained glass pane named "다이아" with lore "150배"
+
+            set {slot.%player%.isOpen} to true
+        else:
+            send "점검 중입니다."
+
+# oddeven
 command /oddeveninfo:
     aliases: /홀짝정보, /ghfWkrwjdqh
     trigger:
@@ -156,41 +187,41 @@ command /oddevenconfig <number>:
 command /oddeven:
     aliases: /홀짝, /ghfWkr
     trigger:
-        if {scasino.isOpen} is not set:
-            send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-            
-        open chest with 6 rows named "홀짝" to player
-        loop 4 times:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+                
+            open chest with 6 rows named "홀짝" to player
             loop 4 times:
-                set {_t} to loop-value-1
-                remove 1 from {_t}
-                set {_t} to {_t} * 9
-                add loop-value-2 to {_t}
+                loop 4 times:
+                    set {_t} to loop-value-1
+                    remove 1 from {_t}
+                    set {_t} to {_t} * 9
+                    add loop-value-2 to {_t}
 
-                set {_x} to {_t} - 1
-                set slot {_x} of current inventory of player to red stained glass pane named "&c홀"
+                    set {_x} to {_t} - 1
+                    set slot {_x} of current inventory of player to red stained glass pane named "&c홀"
 
-                set {_y} to {_t} + 4
-                set slot {_y} of current inventory of player to blue stained glass pane named "&9짝"
-        loop 4 times:
-            set {_x} to (loop-number - 1) * 9 + 4
-            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
-        loop 18 times:
-            set {_x} to (loop-number + 35)
-            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+                    set {_y} to {_t} + 4
+                    set slot {_y} of current inventory of player to blue stained glass pane named "&9짝"
+            loop 4 times:
+                set {_x} to (loop-number - 1) * 9 + 4
+                set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+            loop 18 times:
+                set {_x} to (loop-number + 35)
+                set slot {_x} of current inventory of player to gray stained glass pane named "&0"
 
-        set slot 40 of current inventory of player to diamond named "&a출금" with lore "&f출금 시 수수료 5%%"
-        set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f맞으면 2배 틀리면 0배" and "&f계속 맞으면 당첨 금액 2배씩 증가"
-        set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 홀짝 선택시 금액 1만원 지출"
-        set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
+            set slot 40 of current inventory of player to diamond named "&a출금" with lore "&f출금 시 수수료 5%%"
+            set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f맞으면 2배 틀리면 0배" and "&f계속 맞으면 당첨 금액 2배씩 증가"
+            set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 홀짝 선택시 금액 1만원 지출"
+            set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
 
-        set {oddeven.%player%.isOpen} to true
+            set {oddeven.%player%.isOpen} to true
+        else:
+            send "점검 중입니다."
 
-# - finder
+# finder
 command /finderinfo:
     aliases: /보물찾기정보, /qhanfckwrlwjdqh
     trigger:
@@ -215,175 +246,180 @@ command /finderconfig <number>:
 command /finder:
     aliases: /보물찾기, /qhanfckwrl
     trigger:
-        if {scasino.isOpen} is not set:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+
+            open chest with 1 rows named "보물찾기 메뉴" to player
+
+            loop 9 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+            set slot 0 of current inventory of player to oak leaves named "&fEASY" with lore "&e2배"
+            set slot 1 of current inventory of player to oak plank named "&fNORMAL" with lore "&e6배"
+            set slot 2 of current inventory of player to oak log named "&fHARD" with lore "&e18배"
+            set slot 3 of current inventory of player to nether wart block named "&cVERY HARD" with lore "&e40배"
+            format slot 8 of player with barrier named "닫기" to close
+
+            set {finder.%player%.isClick} to true
+        else:
             send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-
-        open chest with 1 rows named "보물찾기 메뉴" to player
-
-        loop 9 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-
-        set slot 0 of current inventory of player to oak leaves named "&fEASY" with lore "&e2배"
-        set slot 1 of current inventory of player to oak plank named "&fNORMAL" with lore "&e6배"
-        set slot 2 of current inventory of player to oak log named "&fHARD" with lore "&e18배"
-        set slot 3 of current inventory of player to nether wart block named "&cVERY HARD" with lore "&e40배"
-        format slot 8 of player with barrier named "닫기" to close
 
 command /findereasy:
     trigger:
-        if {scasino.isOpen} is not set:
-            send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+
+            open chest with 2 rows named "보물찾기-EASY" to player
+
+            loop 9 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to chest named "뭘까요?"
+                set {finder.easy.%player%.chest::%loop-number%} to 0
+
+            loop 9 times:
+                set {_s} to loop-number
+                add 8 to {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
             
-        open chest with 2 rows named "보물찾기-EASY" to player
+            set {_c} to 0
+            while {_c} < 3:
+                set {_x} to random integer from 1 to number of {finder.easy.%player%.chest::*}
+                if {finder.easy.%player%.chest::%{_x}%} is 0:
+                    set {finder.hard.%player%.chest::%{_x}%} to 1
+                    add 1 to {_c}
 
-        loop 9 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to chest named "뭘까요?"
-            set {finder.easy.%player%.chest::%loop-number%} to 0
+            set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
+            set slot 10 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 2배!"
+            set slot 15 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
+            set slot 16 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
+            format slot 17 of player with barrier named "닫기" to close
 
-        loop 9 times:
-            set {_s} to loop-number
-            add 8 to {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        
-        set {_c} to 0
-        while {_c} < 3:
-            set {_x} to random integer from 1 to 9
-            if {finder.easy.%player%.chest::%{_x}%} is 0:
-                set {finder.easy.%player%.chest::%{_x}%} to 1
-                add 1 to {_c}
-
-        set slot 9  of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
-        set slot 10 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 2배!"
-        set slot 15 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
-        set slot 16 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
-        format slot 17 of player with barrier named "닫기" to close
-        set {finder.%player%.isClick} to true
+            set {finder.%player%.isClick} to true
+        else:
+            send "점검 중입니다."
 
 command /findernormal:
     trigger:
-        if {scasino.isOpen} is not set:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+
+            open chest with 4 rows named "보물찾기-NORMAL" to player
+
+            loop 27 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to chest named "뭘까요?"
+                set {finder.normal.%player%.chest::%loop-number%} to 0
+            
+            loop 9 times:
+                set {_s} to loop-number
+                add 26 to {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+            
+            set {_c} to 0
+            while {_c} < 3:
+                set {_x} to random integer from 1 to number of {finder.normal.%player%.chest::*}
+                if {finder.normal.%player%.chest::%{_x}%} is 0:
+                    set {finder.hard.%player%.chest::%{_x}%} to 1
+                    add 1 to {_c}
+
+            set slot 27 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
+            set slot 28 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 6배!"
+            set slot 33 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
+            set slot 34 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
+            format slot 35 of player with barrier named "닫기" to close
+
+            set {finder.%player%.isClick} to "fuckfuckfuck"
+        else:
             send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-
-        open chest with 4 rows named "보물찾기-NORMAL" to player
-
-        loop 27 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to chest named "뭘까요?"
-            set {finder.normal.%player%.chest::%loop-number%} to 0
-        
-        loop 9 times:
-            set {_s} to loop-number
-            add 26 to {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        
-        set {_c} to 0
-        while {_c} < 3:
-            set {_x} to random integer from 1 to 27
-            if {finder.normal.%player%.chest::%{_x}%} is 0:
-                set {finder.normal.%player%.chest::%{_x}%} to 1
-                add 1 to {_c}
-
-        set slot 27 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
-        set slot 28 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 6배!"
-        set slot 33 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
-        set slot 34 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
-        format slot 35 of player with barrier named "닫기" to close
-        set {finder.%player%.isClick} to "fuckfuckfuck"
 
 command /finderhard:
     trigger:
-        if {scasino.isOpen} is not set:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+
+            open chest with 6 rows named "보물찾기-HARD" to player
+
+            loop 45 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to chest named "뭘까요?"
+                set {finder.hard.%player%.chest::%loop-number%} to 0
+
+            loop 9 times:
+                set {_s} to loop-number
+                add 44 to {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+            set {_c} to 0
+            while {_c} < 3:
+                set {_x} to random integer from 1 to number of {finder.hard.%player%.chest::*}
+                if {finder.hard.%player%.chest::%{_x}%} is 0:
+                    set {finder.hard.%player%.chest::%{_x}%} to 1
+                    add 1 to {_c}
+
+            set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
+            set slot 46 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 18배!"
+            set slot 51 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
+            set slot 52 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
+            format slot 53 of player with barrier named "닫기" to close
+
+            set {finder.%player%.isClick} to "fuckfuckfuck"
+        else:
             send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-
-        open chest with 6 rows named "보물찾기-HARD" to player
-
-        loop 45 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to chest named "뭘까요?"
-            set {finder.hard.%player%.chest::%loop-number%} to 0
-
-        loop 9 times:
-            set {_s} to loop-number
-            add 44 to {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        
-        set {_c} to 0
-        while {_c} < 3:
-            set {_x} to random integer from 1 to 45
-            if {finder.hard.%player%.chest::%{_x}%} is 0:
-                set {finder.hard.%player%.chest::%{_x}%} to 1
-                add 1 to {_c}
-
-        set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
-        set slot 46 of current inventory of player to book named "&f게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 18배!"
-        set slot 51 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
-        set slot 52 of current inventory of player to cobwebs named "&f초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
-        format slot 53 of player with barrier named "닫기" to close
-
-        set {finder.%player%.isClick} to "fuckfuckfuck"
 
 command /finderveryhard:
     trigger:
-        if {scasino.isOpen} is not set:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+
+            open chest with 6 rows named "보물찾기-VERYHARD" to player
+
+            loop 45 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to chest named "뭘까요?"
+                set {finder.vhard.%player%.chest::%loop-number%} to 0
+            
+            loop 9 times:
+                set {_s} to loop-number
+                add 44 to {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+            
+            set {_x} to random integer from 1 to number of {finder.vhard.%player%.chest::*}
+            set {finder.vhard.%player%.chest::%{_x}%} to 1
+
+            set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
+            set slot 46 of current inventory of player to book named "&d게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 40배!!!"
+            set slot 51 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
+            set slot 52 of current inventory of player to cobwebs named "&d초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
+            format slot 53 of player with barrier named "&d닫기" to close
+
+            set {finder.%player%.isClick} to "fuckfuckfuck"
+        else:
             send "점검 중입니다."
-            stop
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
 
-        open chest with 6 rows named "보물찾기-VERYHARD" to player
-
-        loop 45 times:
-            set {_s} to loop-number
-            remove 1 from {_s}
-            set slot {_s} of current inventory of player to chest named "뭘까요?"
-            set {finder.vhard.%player%.chest::%loop-number%} to 0
-        
-        loop 9 times:
-            set {_s} to loop-number
-            add 44 to {_s}
-            set slot {_s} of current inventory of player to gray stained glass pane named "&0"
-        
-        set {_x} to random integer from 1 to 45
-        set {finder.vhard.%player%.chest::%{_x}%} to 1
-
-        set slot 45 of current inventory of player to gold ingot named "&f배팅 금액" with lore "&e%{finder.%player%.bat}%원"
-        set slot 46 of current inventory of player to book named "&d게임 룰" with lore "&f상자 안에 보물이 숨어져있다!" and "&f찾으면 배팅 금액의 40배!!!"
-        set slot 51 of current inventory of player to oak sign named "&d메뉴로" with lore "&f보물찾기 메뉴로 이동합니다."
-        set slot 52 of current inventory of player to cobwebs named "&d초기화" with lore "&f버튼을 누르면 게임이 초기화됩니다."
-        format slot 53 of player with barrier named "&d닫기" to close
-
-        set {finder.%player%.isClick} to "fuckfuckfuck"
-
-# - blackjack
+# blackjack
 command /새우블랙잭정보:
     trigger:
         send "============================================"
-        send "=              새우 블랙잭 정보"
+        send "=                블랙잭 정보"
         send "= 현재 배팅 금액 : %{blackjack.%player%.bat}%원"
-        send "= /새우블랙잭설정 <금액> : 배팅 금액 설정 (기본 1만원)"
+        send "= /블랙잭 : 게임"
+        send "= /블랙잭설정 <금액> : 배팅 금액 설정 (기본 1만원)"
         send "============================================"
 
 command /새우블랙잭설정 <number>:
@@ -395,33 +431,37 @@ command /새우블랙잭설정 <number>:
         else:
             set {blackjack.%player%.bat} to arg 1
             send "배팅 금액이 %{blackjack.%player%.bat}%원으로 수정되었습니다."
+
 command /새우블랙잭:
     trigger:
-        if {balance.mc_shrimp.casino} <= 500000:
-            send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
-            stop
-        
-        open chest with 6 rows named "블랙잭" to player
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+            
+            open chest with 6 rows named "블랙잭" to player
 
-        loop 6 times:
-            set {_x} to (loop-number - 1) * 9 + 4
-            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+            loop 6 times:
+                set {_x} to (loop-number - 1) * 9 + 4
+                set slot {_x} of current inventory of player to gray stained glass pane named "&0"
 
-        loop 18 times:
-            set {_x} to (loop-number - 1) + 36
-            set slot {_x} of current inventory of player to gray stained glass pane named "&0"
+            loop 18 times:
+                set {_x} to (loop-number - 1) + 36
+                set slot {_x} of current inventory of player to gray stained glass pane named "&0"
 
-        set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f21에 가장 가까운 사람이 승리" and "&f21 초과 시 패배"
-        set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 힛 선택 시 배팅금액(&e%{blackjack.%player%.bat}%&f) 지출"
-        set slot 47 of current inventory of player to book named "&e게임 룰" with lore "&fA: 1or11" and "&f2~10: 숫자" and "&fJQK: 10"
+            set slot 45 of current inventory of player to book named "&e게임 룰" with lore "&f21에 가장 가까운 사람이 승리" and "&f21 초과 시 패배"
+            set slot 46 of current inventory of player to book named "&e게임 룰" with lore "&f첫 힛 선택 시 배팅금액(&e%{blackjack.%player%.bat}%&f) 지출"
+            set slot 47 of current inventory of player to book named "&e게임 룰" with lore "&fA: 1or11" and "&f2~10: 숫자" and "&fJQK: 10"
 
-        set slot 48 of current inventory of player to diamond named "&a힛" with lore "&f카드 한 장 더 받기"
-        set slot 50 of current inventory of player to diamond named "&a스테이" with lore "&f카드 더이상 받지 않기"
+            set slot 48 of current inventory of player to diamond named "&a힛" with lore "&f카드 한 장 더 받기"
+            set slot 50 of current inventory of player to diamond named "&a스테이" with lore "&f카드 더이상 받지 않기"
 
-        set slot 52 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
-        set slot 53 of current inventory of player to gold ingot named "&6배팅 금액" with lore "&f%{blackjack.%player%.bat}%" and "&f변경: /새우블랙잭설정 <금액> (5,000 ~ 1,000,000)"
+            set slot 52 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
+            set slot 53 of current inventory of player to gold ingot named "&6배팅 금액" with lore "&f%{blackjack.%player%.bat}%"
 
-        set {blackjack.%player%.isClick} to true
+            set {blackjack.%player%.isClick} to true
+        else:
+            send "점검 중입니다."
 
 command /bdealer:
     trigger:
@@ -494,37 +534,52 @@ command /bdealer:
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
         else:
             if {blackjack.%player%.dealer.addAll} > 21:
                 send "결과: &c플레이어 승"
-                add {blackjack.%player%.bat} * 2 to player's money
-                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                set {_t} to {blackjack.%player%.bat} * 2
+                add {_t} to player's money
+                remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} > {blackjack.%player%.addAll}:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} < {blackjack.%player%.addAll}:
                 send "결과: &c플레이어 승"
-                add {blackjack.%player%.bat} * 2 to player's money
-                remove {blackjack.%player%.bat} * 2 from {balance.mc_shrimp.casino}
+                set {_t} to {blackjack.%player%.bat} * 2
+                add {_t} to player's money
+                remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else if {blackjack.%player%.dealer.addAll} == {blackjack.%player%.addAll}:
                 send "결과: &e무승부"
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
         send "-----------------------------------------------------"
         set slot 49 of current inventory of player to cobwebs named "&e초기화"
         set {blackjack.%player%.isDoInit} to true
                 
 command /bjreset:
     trigger:
+        clear {blackjack.%player%.isClick}
         clear {blackjack.%player%.isPlay}
         clear {blackjack.%player%.isDoInit}
         clear {blackjack.%player%.cards::*}
@@ -549,9 +604,56 @@ command /bjreset:
             if {_i} >= 4:
                 add 1 to {_j}
                 set {_i} to 0
+
+# lotto
+command /lotto:
+    trigger:
+        if {mc_shrimp.casino.isOpen} is true:
+            if {balance.mc_shrimp.casino} <= 500000:
+                send "카지노에 충분한 금액이 없습니다. mc_shrimp님에게 문의하세요."
+                stop
+                
+            open chest with 4 rows named "로또방" to player
+            loop 36 times:
+                set {_s} to loop-number
+                remove 1 from {_s}
+                set slot {_s} of current inventory of player to gray stained glass pane named "&0"
+
+            set slot  9 of current inventory of player to black wool named "&e1" with lore "&f현재 인원: %{lotto.pcounts::1}%명"
+            set slot 10 of current inventory of player to red wool named "&e2" with lore "&f현재 인원: %{lotto.pcounts::2}%명"
+            set slot 11 of current inventory of player to orange wool named "&e3" with lore "&f현재 인원: %{lotto.pcounts::3}%명"
+            set slot 12 of current inventory of player to yellow wool named "&e4" with lore "&f현재 인원: %{lotto.pcounts::4}%명"
+            set slot 13 of current inventory of player to lime wool named "&e5" with lore "&f현재 인원: %{lotto.pcounts::5}%명"
+            set slot 14 of current inventory of player to green wool named "&e6" with lore "&f현재 인원: %{lotto.pcounts::6}%명"
+            set slot 15 of current inventory of player to light blue wool named "&e7" with lore "&f현재 인원: %{lotto.pcounts::7}%명"
+            set slot 16 of current inventory of player to blue wool named "&e8" with lore "&f현재 인원: %{lotto.pcounts::8}%명"
+            set slot 17 of current inventory of player to pink wool named "&e9" with lore "&f현재 인원: %{lotto.pcounts::9}%명"
+
+            set slot 27 of current inventory of player to book named "&e게임 룰" with lore "&f1~9까지의 숫자 중 하나를 고릅니다." and "매 1시간마다 번호를 추첨하여 그 번호에 맞는 사람들에게" and "현재 모여 있는 돈을 드립니다."
+            set slot 33 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
+            set slot 34 of current inventory of player to gold ingot named "&6로또 가격" with lore "&f%{lotto.%player%.bat}%원"
+            set slot 35 of current inventory of player to gold ingot named "&6현재 총 금액" with lore "&f%{lotto.batting}%원"
+
+            set {lotto.%player%.isOpen} to true
+        else:
+            send "점검 중입니다."
+
+command /lottoreset:
+    trigger:
+        if player has permission "casino.mc_shrimp":
+            loop 9 times:
+                set {lotto.moneys::%loop-value%} to 0
+                set {lotto.pcounts::%loop-value%} to 0
+                clear {lotto.players::%loop-value%::*}
+            loop all players:
+                set {lotto.%loop-player%.isChoice} to false
+            set {lotto.batting} to 0
+            set {lotto.broadcastvalue} to 1000000
+            set {lotto.count} to 0
+
 # events
 on inventory click:
-    # casino menu
+    # menu
     if iname contains "Shrimp's Casino":
         cancel event
         if clicked raw slot is 0:
@@ -570,7 +672,6 @@ on inventory click:
             close player's inventory
             wait 1 tick
             execute player command "/새우블랙잭"
-
     # slotmachine
     if iname contains "슬롯머신":
         cancel event
@@ -581,11 +682,12 @@ on inventory click:
                     add {slot.%player%.bat} to {balance.mc_shrimp.casino}
                     remove {slot.%player%.bat} from player's money
                     set slot 7 of current inventory of player to air named "&e룰렛돌리기" with lore "돌아가는 중.."
+
+                    send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                 else:
-                    send "소지 금액이 [10,000] 이하 입니다."
+                    send "소지 금액이 [%{slot.%player%.bat}%] 이하 입니다."
             else:
                 send "연속해서 누르지 마세요."
-    
     # oddeven
     if iname contains "홀짝":
         cancel event
@@ -595,9 +697,11 @@ on inventory click:
 
             set {_o} to {oddeven.%player%.balance} * 0.95
             set {_i} to {oddeven.%player%.balance} * 0.05
+            set {_c} to {oddeven.%player%.balance} * 0.04
 
             add {_o} to player's money
-            add {_i} to {balance.mc_shrimp.casino}
+            add {_c} to {balance.mc_shrimp.casino}
+            send "[로또] 수입금: &9%{_c}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
             send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 5%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
 
@@ -625,10 +729,11 @@ on inventory click:
                             if {_num.%player%} is 0:
                                 send "당첨!"
                                 
-                                
                                 set {_b} to {oddeven.%player%.bat} * 2^{oddeven.%player%.count}
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
+
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 add 1 to {oddeven.%player%.count}
 
@@ -643,6 +748,8 @@ on inventory click:
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
+
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
@@ -657,6 +764,7 @@ on inventory click:
                                 set {_b} to {oddeven.%player%.bat} * 2^{oddeven.%player%.count}
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 add 1 to {oddeven.%player%.count}
 
@@ -671,13 +779,13 @@ on inventory click:
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
             else:
                 send "돈이 부족합니다."
                 stop
-
     # finder
     if iname contains "보물찾기 메뉴":
         cancel event
@@ -707,6 +815,8 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
+                        send "[보물찾기-EASY] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
                         loop 9 times:
                             set {_s} to loop-number
                             remove 1 from {_s}
@@ -721,6 +831,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
+                            send "[보물찾기-EASY] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else:
                             send "꽝.."
 
@@ -747,6 +858,8 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
+                        send "[보물찾기-NORMAL] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
                         loop 27 times:
                             set {_s} to loop-number
                             remove 1 from {_s}
@@ -761,6 +874,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
+                            send "[보물찾기-NORMAL] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else:
                             send "꽝.."
 
@@ -787,6 +901,8 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
+                        send "[보물찾기-HARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
                         loop 45 times:
                             set {_s} to loop-number
                             remove 1 from {_s}
@@ -801,6 +917,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
+                            send "[보물찾기-HARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else:
                             send "꽝.."
 
@@ -827,6 +944,8 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
+                        send "[보물찾기-VERYHARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+
                         loop 45 times:
                             set {_s} to loop-number
                             remove 1 from {_s}
@@ -839,11 +958,11 @@ on inventory click:
                             set {_t} to {finder.%player%.bat} * 40
                             send "&c당첨!!!! &f당첨금 [&e%{_t}%&f]원이 지급되었습니다."
 
-                            if {_t} >= 1000000:
-                                broadcast "[&c%player%&f]님이 &c보물찾기-VERYHARD&f 에서 &l&e%{_t}%&f&r를 따셨습니다!!!!"
+                            broadcast "[&c%player%&f]님이 &c보물찾기-VERYHARD&f 에서 &l&e%{_t}%&f&r를 따셨습니다!!!!"
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
+                            send "[보물찾기-VERYHARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else:
                             send "꽝.."
 
@@ -979,7 +1098,6 @@ on inventory click:
                     if {_i} >= 4:
                         add 1 to {_j}
                         set {_i} to 0
-                set slot 35 of current inventory of player to book named "&e딜러 합계" with lore "&f%{blackjack.%player%.dealer.addAll}%"
 
                 send "-----------------------------------------------------"
                 send "&c플레이어&f(%{blackjack.%player%.addAll}%) / &9딜러&f(%{blackjack.%player%.dealer.addAll}%)"
@@ -998,6 +1116,7 @@ on inventory click:
                 else if {blackjack.%player%.addAll} == 21:
                     execute player command "/bdealer"
                 set slot 30 of current inventory of player to book named "&e유저 합계" with lore "&f%{blackjack.%player%.addAll}%"
+                set slot 35 of current inventory of player to book named "&e딜러 합계" with lore "&f%{blackjack.%player%.dealer.addAll}%"
 
         if clicked raw slot is 49:
             if {blackjack.%player%.isDoInit} is set:
@@ -1009,7 +1128,36 @@ on inventory click:
                     execute player command "/bdealer"
         if clicked raw slot is 52:
             execute player command "/도박메뉴"
+    # lotto
+    if iname contains "로또방":
+        cancel event
 
+        loop 9 times:
+            set {_s} to loop-value
+            add 8 to {_s}
+            if clicked raw slot is {_s}:
+                if {lotto.%loop-player%.isChoice} is false:
+                    set {lotto.%loop-player%.isChoice} to true
+                    
+                    add {lotto.%player%.bat} to {lotto.moneys::%loop-value%}
+                    add {lotto.%player%.bat} to {lotto.batting}
+                    add 1 to {lotto.pcounts::%loop-value%}
+                    add "%player%" to {lotto.players::%loop-value%::*}
+
+                    if {lotto.batting} >= {lotto.broadcastvalue}:
+                        broadcast "로또 총 금액이 [$%{lotto.broadcastvalue}%]를 넘어섰습니다!!"
+                        broadcast "확인: /도박메뉴 => 로또"
+                        add 1000000 to {lotto.broadcastvalue}
+
+                    exit 1 loop
+                else:
+                    send "이미 [%{lotto.%player%.choice}%]번을 선택하셨습니다."
+                    exit 1 loop
+        
+        if clicked raw slot is 33:
+            execute player command "/도박메뉴"
+
+# slotmachine
 every 10 tick in "wild1":
     loop all players:
         if loop-player is in world "wild1":
@@ -1046,54 +1194,78 @@ every 10 tick in "wild1":
                             add {slot.%loop-player%.bat} to loop-player's money
                             remove {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
                             message "한번더!" to loop-player
+                            send "[슬롯] 지출금: &c%{slot.%loop-player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else if {slot.%loop-player%.numbers::1} == 2:
-                            add 15 * {slot.%loop-player%.bat} to loop-player's money
-                            remove 15 * {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
+                            set {_a} to 15 * {slot.%loop-player%.bat}
+                            add {_a} to loop-player's money
+                            remove {_a} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 15배 슬롯에 당첨되었습니다!!"
+                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else if {slot.%loop-player%.numbers::1} == 3:
-                            add 150 * {slot.%loop-player%.bat} to loop-player's money
-                            remove 150 * {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
+                            set {_a} to 150 * {slot.%loop-player%.bat}
+                            add {_a} to loop-player's money
+                            remove {_a} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 150배 슬롯에 당첨되었습니다!!!"
+                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
                         else:
                             message "꽝" to loop-player
                 else:
                     add 1 to {slot.%loop-player%.count}
-                    
+# lotto
+every 300 seconds in "wild1":
+    if {lotto.count} == 5:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 30분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 8:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 15분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 10:
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과 5분전"
+        broadcast "현재 총 배팅 금액: [$%{lotto.batting}%]"
+        broadcast "-----------------------------------------------------"
+        add 1 to {lotto.count}
+    else if {lotto.count} == 11:
+        set {_result} to random integer from 1 to 9
+
+        set {_b} to {lotto.batting} * 0.95
+        set {_t} to {lotto.batting} * 0.05
+        set {_a} to {lotto.batting} * 0.04 # 세금 1% 감안
+
+        set {_money} to {_b} / {lotto.pcounts::%{_result}%}
+        set {_su} to {_t} / {lotto.pcounts::%{_result}%}
+
+        add {_a} to {balance.mc_shrimp.casino}  # 실 이용료 4%
+        send "[로또] 수입금: %{_a}% / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+        loop {lotto.players::%{_result}%::*}:
+            add {_money} to {loop-value}'s balance
+
+        broadcast "-----------------------------------------------------"
+        broadcast "%{lotto.round}%회차 로또 결과: &c%{_result}%&f / 당첨 인원: %{lotto.pcounts::%{_result}%}%명"
+        broadcast "총 배팅 금액: [$%{lotto.batting}%] / 1인당 지급액: $%{_money}%(수수료 5%%: %{_su}%)"
+        broadcast "-----------------------------------------------------"
+        execute console command "/lottoreset"
+
+        add 1 to {lotto.round}
+    else:
+        add 1 to {lotto.count}
+
 on inventory close:
-    # casinomenu
     if {cmenu.%player%.isOpen} is set:
         clear {cmenu.%player%.isOpen}
-    # slotmachine
     if {slot.%player%.isOpen} is set:
         clear {slot.%player%.isOpen}
-    # oddeven
     if icname contains "홀짝":
         clear {oddeven.%player%.isOpen}
-    # finder
     if {finder.%player%.isClick} is set:
         clear {finder.%player%.isClick}
-    # blackjack
     if {blackjack.%player%.isDoInit} is set:
         execute player command "/bjreset"
-        clear {finder.%player%.isClick}
-
-on script unload:
-    loop all players:
-        # casinomenu
-        if {scasino.isOpen} is set:
-            clear {scasino.isOpen}
-        if {cmenu.%loop-player%.isOpen} is set:
-            close loop-player's inventory
-        # slotmachine
-        if {slot.%loop-player%.isOpen} is set:
-            close loop-player's inventory
-        # oddeven
-        if {oddeven.%loop-player%.isOpen} is set:
-            close loop-player's inventory
-        # finder
-        if {finder.%loop-player%.isClick} is set:
-            close loop-player's inventory
-        # blackjack
-        if {blackjack.%loop-player%.isClick} is set:
-            close loop-player's inventory
-        
+    if {lotto.%player%.isOpen} is set:
+        clear {lotto.%player%.isOpen}

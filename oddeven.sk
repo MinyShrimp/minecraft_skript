@@ -68,9 +68,11 @@ on inventory click:
 
             set {_o} to {oddeven.%player%.balance} * 0.95
             set {_i} to {oddeven.%player%.balance} * 0.05
+            set {_c} to {oddeven.%player%.balance} * 0.04
 
             add {_o} to player's money
-            add {_i} to {balance.mc_shrimp.casino}
+            add {_c} to {balance.mc_shrimp.casino}
+            send "[로또] 수입금: &9%{_c}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
             send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 5%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
 
@@ -98,16 +100,17 @@ on inventory click:
                             if {_num.%player%} is 0:
                                 send "당첨!"
                                 
-                                
                                 set {_b} to {oddeven.%player%.bat} * 2^{oddeven.%player%.count}
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
+
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 add 1 to {oddeven.%player%.count}
 
                                 send "현재 금액: &e%{oddeven.%player%.balance}%원"
 
-                                if {oddeven.%player%.count} >= 4:
+                                if {oddeven.%player%.count} >= 6:
                                     broadcast "&f[&c%player%&f]님이 현재 &c'홀짝'&f &l연속 %{oddeven.%player%.count}%회&r&f째 당첨 중!!"
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
@@ -116,6 +119,8 @@ on inventory click:
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
+
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
@@ -130,12 +135,13 @@ on inventory click:
                                 set {_b} to {oddeven.%player%.bat} * 2^{oddeven.%player%.count}
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 add 1 to {oddeven.%player%.count}
 
                                 send "현재 금액: &e%{oddeven.%player%.balance}%원"
 
-                                if {oddeven.%player%.count} >= 4:
+                                if {oddeven.%player%.count} >= 6:
                                     broadcast "&f[&c%player%&f]님이 현재 &c'홀짝'&f &l연속 %{oddeven.%player%.count}%회&r&f째 당첨 중!!"
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f%{oddeven.%player%.balance}%원"
@@ -144,6 +150,7 @@ on inventory click:
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
