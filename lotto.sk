@@ -101,17 +101,25 @@ every 300 seconds in "world":
     else if {lotto.count} == 11:
         set {_result} to random integer from 1 to 9
 
-        set {_b} to {lotto.batting} * 0.95
-        set {_t} to {lotto.batting} * 0.05
-        set {_a} to {lotto.batting} * 0.04 # 세금 1% 감안
+        if {lotto.pcounts::%{_result}%} is 0:
+            set {_a} to {lotto.batting} * 0.99 # 세금 1% 감안
+            add {_a} to {balance.mc_shrimp.casino}
+            set {_su} to 0
+            set {_money} to 0
+            send "[로또] 수입금: &9%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+        else:
+            set {_b} to {lotto.batting} * 0.95
+            set {_t} to {lotto.batting} * 0.05
+            set {_a} to {lotto.batting} * 0.04 # 세금 1% 감안
 
-        set {_money} to {_b} / {lotto.pcounts::%{_result}%}
-        set {_su} to {_t} / {lotto.pcounts::%{_result}%}
+            set {_money} to {_b} / {lotto.pcounts::%{_result}%}
+            set {_su} to {_t} / {lotto.pcounts::%{_result}%}
 
-        add {_a} to {balance.mc_shrimp.casino}  # 실 이용료 4%
-        send "[로또] 수입금: %{_a}% / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
-        loop {lotto.players::%{_result}%::*}:
-            add {_money} to {loop-value}'s balance
+            add {_a} to {balance.mc_shrimp.casino}  # 실 이용료 4%
+            send "[로또] 수입금: &9%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+        
+            loop {lotto.players::%{_result}%::*}:
+                add {_money} to {loop-value}'s balance
 
         broadcast "-----------------------------------------------------"
         broadcast "%{lotto.round}%회차 로또 결과: &c%{_result}%&f / 당첨 인원: %{lotto.pcounts::%{_result}%}%명"
