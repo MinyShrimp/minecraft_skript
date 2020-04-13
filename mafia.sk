@@ -146,9 +146,15 @@ command /mfday:
 
             if {mafia.%loop-value%.click_player} is not -1:
                 if {mafia.%loop-value%.jobCode} == 1:
-                    set {_a} to {mafia.%loop-value%.click_player}
+                    add {mafia.%loop-value%.click_player} to {_l::*}
                 else if {mafia.%loop-value%.jobCode} == 3:
                     set {_b} to {mafia.%loop-value%.click_player}
+        
+        if {_l::1} is {_l::2}
+            set {_a} to {_l::1}
+        else:
+            set {_t} to random integer 1 to 2
+            set {_a} to {_l::%{_t}%}
         
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
@@ -173,14 +179,22 @@ command /mfvote:
 
         set {mafia.isVote} to true
         loop all players:
-            set {mafia.%loop-player%.isClick} to false
             if {mafia.%loop-player%.isChat} is true:
+                set {mafia.%loop-player%.isClick} to false
                 send "------------------------" to loop-player
                 send "투표 시간입니다." to loop-player
-                send "각자 마피아로 의심가는 인물 한 명을 지목해주시길 바랍니다." to loop-player
+                send "5분동안 상의 후에 각자 마피아로 의심가는 인물 한 명을 지목해주시길 바랍니다." to loop-player
                 send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to loop-player
                 send "/투표" to loop-player
                 send "------------------------" to loop-player
+        
+        set {_bar} to new bossbar
+        set title of bossbar {_bar} to "투표"
+        set {_denominator} to 300
+        set {_numerator} to {_denominator}
+
+        wait 5 minutes
+        execute console command "/mfvoteclose"
 
 command /mfvoteclose:
     trigger:
@@ -229,14 +243,22 @@ command /mfnight:
         set {mafia.isNight} to true
 
         loop all players:
-            set {mafia.%loop-player%.isClick} to false
             if {mafia.%loop-player%.isChat} is true:
+                set {mafia.%loop-player%.isClick} to false
                 send "------------------------" to loop-player
                 send "밤이 되었습니다." to loop-player
-                send "각자 직업에 맞는 행동을 해주시길 바랍니다." to loop-player
+                send "1분동안 각자 직업에 맞는 행동을 해주시길 바랍니다." to loop-player
                 send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to loop-player
                 send "/마피아직업" to loop-player
                 send "------------------------" to loop-player
+
+        set {_bar} to new bossbar
+        set title of bossbar {_bar} to "밤"
+        set {_denominator} to 60
+        set {_numerator} to {_denominator}
+        
+        wait 1 minutes
+        execute console command "/mfday"
 
 command /투표:
     trigger:
@@ -347,9 +369,18 @@ on inventory click:
         else:
             send "이미 선택하셨습니다."
 
-every 120 seconds in "world":
-    if {mafia.isStart} is true:
-        #
+every 1 seconds:
+    # 보스바 타이머
+    if {_bar} is set:
+        remove 1 from {_numerator}
+        set progress of bossbar {_bar} to {_numerator} / {_denominator}
+
+        loop all players:
+            if {mafia.%loop-player%.isChat} is true:
+                add loop-player to bossbar {_bar}
+                if {_numerator} <= 0:
+                    remove loop-player from bossbar {_bar}
+                    clear {_bar}
 
 on chat:
     if {mafia.%player%.isChat} is true:
