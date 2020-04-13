@@ -1165,7 +1165,7 @@ on inventory click:
             execute player command "/도박메뉴"
 
 # - slotmachine
-every 10 tick in "wild1":
+every 1 seconds in "wild1":
     loop all players:
         if loop-player is in world "wild1":
             if {slot.%loop-player%.isRun} is set:
