@@ -35,6 +35,8 @@ command /lotto:
         set slot 34 of current inventory of player to gold ingot named "&6로또 가격" with lore "&f%{lotto.%player%.bat}%원"
         set slot 35 of current inventory of player to gold ingot named "&6현재 총 금액" with lore "&f%{lotto.batting}%원"
 
+        set {lotto.%player%.isOpen} to true
+
 command /lottoreset:
     trigger:
         if player has permission "casino.mc_shrimp":
@@ -120,3 +122,12 @@ every 300 seconds in "world":
         add 1 to {lotto.round}
     else:
         add 1 to {lotto.count}
+
+on inventory close:
+    if {lotto.%player%.isOpen} is set:
+        clear {lotto.%player%.isOpen}
+
+on script unload:
+    loop all players:
+        if {lotto.%loop-player%.isOpen} is set:
+            close loop-player's inventory

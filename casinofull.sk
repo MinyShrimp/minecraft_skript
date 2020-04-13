@@ -34,7 +34,8 @@ variables:
     {lotto.count} = 0
     {lotto.broadcastvalue} = 1000000
 
-# __casinocontrol
+# commands
+# - __casinocontrol
 command /casinocontrol [<text>] [<text>]:
     aliases: /ccontrol
     trigger:
@@ -92,7 +93,7 @@ command /shclose:
                     close loop-player's inventory
         else:
             message "알 수 없는 명령어 입니다."
-# menu
+# - menu
 command /cmenu:
     aliases: /도박메뉴, /ehqkrapsb
     trigger:
@@ -107,13 +108,14 @@ command /cmenu:
             set slot 1 of current inventory of player to gold ingot named "&f홀짝" with lore "&f/홀짝설정 <금액> : 배팅금액 변경 (5,000~100,000)"
             set slot 2 of current inventory of player to chest named "&f보물찾기" with lore "&f/보물찾기설정 <금액> : 배팅금액 변경 (5,000~100,000)"
             set slot 3 of current inventory of player to white wool named "&f블랙잭" with lore "&f/블랙잭설정 <금액> : 배팅금액 변경 (5,000~1,000,000)"
+            set slot 4 of current inventory of player to emerald named "&f로또" with lore "&f로또 금액 50000원 고정"
             format slot 8 of player with barrier named "닫기" to close
 
             set {cmenu.%player%.isOpen} to true
         else:
             send "점검 중입니다."
 
-# slotmachine
+# - slotmachine
 command /sminfo:
     aliases: /슬롯정보, /tmffhtwjdqh
     trigger:
@@ -162,7 +164,7 @@ command /slotmachine:
         else:
             send "점검 중입니다."
 
-# oddeven
+# - oddeven
 command /oddeveninfo:
     aliases: /홀짝정보, /ghfWkrwjdqh
     trigger:
@@ -221,7 +223,7 @@ command /oddeven:
         else:
             send "점검 중입니다."
 
-# finder
+# - finder
 command /finderinfo:
     aliases: /보물찾기정보, /qhanfckwrlwjdqh
     trigger:
@@ -412,7 +414,7 @@ command /finderveryhard:
         else:
             send "점검 중입니다."
 
-# blackjack
+# - blackjack
 command /새우블랙잭정보:
     trigger:
         send "============================================"
@@ -605,8 +607,9 @@ command /bjreset:
                 add 1 to {_j}
                 set {_i} to 0
 
-# lotto
+# - lotto
 command /lotto:
+    aliases: /로또, /fhEh
     trigger:
         if {mc_shrimp.casino.isOpen} is true:
             if {balance.mc_shrimp.casino} <= 500000:
@@ -672,6 +675,10 @@ on inventory click:
             close player's inventory
             wait 1 tick
             execute player command "/새우블랙잭"
+        if clicked raw slot is 4:
+            close player's inventory
+            wait 1 tick
+            execute player command "/로또"
     # slotmachine
     if iname contains "슬롯머신":
         cancel event
@@ -1157,7 +1164,7 @@ on inventory click:
         if clicked raw slot is 33:
             execute player command "/도박메뉴"
 
-# slotmachine
+# - slotmachine
 every 10 tick in "wild1":
     loop all players:
         if loop-player is in world "wild1":
@@ -1211,7 +1218,7 @@ every 10 tick in "wild1":
                             message "꽝" to loop-player
                 else:
                     add 1 to {slot.%loop-player%.count}
-# lotto
+# - lotto
 every 300 seconds in "wild1":
     if {lotto.count} == 5:
         broadcast "-----------------------------------------------------"

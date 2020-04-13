@@ -54,6 +54,8 @@ command /blackjack:
         set slot 52 of current inventory of player to oak sign named "&d메뉴로" with lore "&f도박 메뉴로 이동합니다."
         set slot 53 of current inventory of player to gold ingot named "&6배팅 금액" with lore "&f%{blackjack.%player%.bat}%"
 
+        set {blackjack.%player%.isOpen} to true
+
 command /bdealer:
     trigger:
         while true:
@@ -170,6 +172,7 @@ command /bdealer:
                 
 command /bjreset:
     trigger:
+        clear {blackjack.%player%.isOpen}
         clear {blackjack.%player%.isPlay}
         clear {blackjack.%player%.isDoInit}
         clear {blackjack.%player%.cards::*}
@@ -348,3 +351,8 @@ on inventory click:
 on inventory close:
     if {blackjack.%player%.isDoInit} is set:
         execute player command "/bjreset"
+
+on script unload:
+    loop all players:
+        if {blackjack.%loop-player%.isOpen} is set:
+            execute player command "/bjreset"
