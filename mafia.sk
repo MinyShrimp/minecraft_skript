@@ -28,7 +28,7 @@ command /마피아 [<text>] [<text>]:
                 stop
             if arg 2 is "정보":
                 send "------------------------"
-                send "마피아 참가자 명단 (%{mafia.count}%명) - 8명이 되면 시작합니다!"
+                send "마피아 참가자 명단 (%{mafia.count}%/8) - 8명이 되면 시작합니다!"
                 loop all players:
                     if {mafia.%loop-player%.isAttend} is true:
                         send "- %loop-player%"
