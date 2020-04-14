@@ -40,65 +40,7 @@ command /마피아 [<text>] [<text>]:
 
             # 8명이 되었을 때
             if {mafia.count} is 8:
-                set {mafia.isStart} to true
-
-                loop 8 times:
-                    set {mafia.jobs::%loop-value%} to 0
-                    set {mafia.%{mafia.players::%loop-value%}%.jobCode} to 0
-
-                # 마피아
-                set {_c} to 0
-                while {_c} < 2:
-                    set {_x} to random integer from 1 to 8
-                    if {mafia.jobs::%{_x}%} is 0:
-                        set {mafia.jobs::%{_x}%} to 1
-                        set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 1
-                        add 1 to {_c}
-                
-                # 경찰
-                set {_c} to 0
-                while {_c} < 1:
-                    set {_x} to random integer from 1 to 8
-                    if {mafia.jobs::%{_x}%} is 0:
-                        set {mafia.jobs::%{_x}%} to 2
-                        set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 2
-                        add 1 to {_c}
-                
-                # 의사
-                set {_c} to 0
-                while {_c} < 1:
-                    set {_x} to random integer from 1 to 8
-                    if {mafia.jobs::%{_x}%} is 0:
-                        set {mafia.jobs::%{_x}%} to 3
-                        set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 3
-                        add 1 to {_c}
-                
-                loop 8 times:
-                    send "------------------------"
-                    send "마피아가 시작되었습니다!!"
-                    loop {mafia.players::*}:
-                        set {_p} to "%loop-value%" parsed as player
-                        if {mafia.jobs::%loop-number%} is 0:
-                            send "당신의 직업은 [&e시민&f]입니다." to {_p}
-                        if {mafia.jobs::%loop-number%} is 1:                            
-                            send "당신의 직업은 [&c마피아&f]입니다." to {_p}
-                            send "서로 마피아끼리 채팅으로 확인하신 후 투표 진행해주세요." to {_p}
-                            send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                            send "서로 다른 사람을 지목한 경우 둘 중 랜덤한 인물에게 적용됩니다." to {_p}
-                            send "/마피아직업" to {_p}
-                        if {mafia.jobs::%loop-number%} is 2:
-                            send "당신의 직업은 [&9경찰&f]입니다." to {_p}
-                            send "하루에 한 번씩 특정인의 직업을 알 수 있습니다." to {_p}
-                            send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                            send "/마피아직업" to {_p}
-                        if {mafia.jobs::%loop-number%} is 3:
-                            send "당신의 직업은 [의사]입니다." to {_p}
-                            send "하루에 한 번씩 특정인을 살릴 수 있습니다." to {_p}
-                            send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                            send "/마피아직업" to {_p}
-                    send "------------------------"
-
-                execute console command "/mfnight"
+                execute console command "/mfstart"
             stop
         send "------------------------"
         send "/마피아 채널 입장"
@@ -286,6 +228,71 @@ command /mfnight:
         
         wait 1 minutes
         execute console command "/mfday"
+
+command /mfstart:
+    trigger:
+        if command sender is player:
+            send "권한이 없습니다."
+            stop
+
+        loop 8 times:
+            set {mafia.jobs::%loop-value%} to 0
+            set {mafia.%{mafia.players::%loop-value%}%.jobCode} to 0
+
+        # 마피아
+        set {_c} to 0
+        while {_c} < 2:
+            set {_x} to random integer from 1 to 8
+            if {mafia.jobs::%{_x}%} is 0:
+                set {mafia.jobs::%{_x}%} to 1
+                set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 1
+                add 1 to {_c}
+                
+        # 경찰
+        set {_c} to 0
+        while {_c} < 1:
+            set {_x} to random integer from 1 to 8
+            if {mafia.jobs::%{_x}%} is 0:
+                set {mafia.jobs::%{_x}%} to 2
+                set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 2
+                add 1 to {_c}
+                
+        # 의사
+        set {_c} to 0
+        while {_c} < 1:
+            set {_x} to random integer from 1 to 8
+            if {mafia.jobs::%{_x}%} is 0:
+                set {mafia.jobs::%{_x}%} to 3
+                set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 3
+                add 1 to {_c}
+                
+        loop 8 times:
+            send "------------------------"
+            send "마피아가 시작되었습니다!!"
+            loop {mafia.players::*}:
+                set {_p} to "%loop-value%" parsed as player
+                if {mafia.jobs::%loop-number%} is 0:
+                    send "당신의 직업은 [&e시민&f]입니다." to {_p}
+                if {mafia.jobs::%loop-number%} is 1:                            
+                    send "당신의 직업은 [&c마피아&f]입니다." to {_p}
+                    send "서로 마피아끼리 채팅으로 확인하신 후 투표 진행해주세요." to {_p}
+                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                    send "서로 다른 사람을 지목한 경우 둘 중 랜덤한 인물에게 적용됩니다." to {_p}
+                    send "/마피아직업" to {_p}
+                if {mafia.jobs::%loop-number%} is 2:
+                    send "당신의 직업은 [&9경찰&f]입니다." to {_p}
+                    send "하루에 한 번씩 특정인의 직업을 알 수 있습니다." to {_p}
+                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                    send "/마피아직업" to {_p}
+                if {mafia.jobs::%loop-number%} is 3:
+                    send "당신의 직업은 [의사]입니다." to {_p}
+                    send "하루에 한 번씩 특정인을 살릴 수 있습니다." to {_p}
+                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                    send "/마피아직업" to {_p}
+            send "------------------------"
+
+        set {mafia.isStart} to true
+        execute console command "/mfnight"
 
 command /mfclose <number>:
     trigger:
