@@ -28,27 +28,33 @@ command /마피아 [<text>] [<text>]:
                 remove 1 from {mafia.count}
                 remove "%player%" from {mafia.players::*}
                 stop
-            if arg 2 is "정보":
-                send "-----------------------------------------------------"
-                send "마피아 참가자 명단 (%{mafia.count}%/8) - 8명이 되면 시작합니다!"
-                loop all players:
-                    if {mafia.%loop-player%.isAttend} is true:
-                        send "- %loop-player%"
-                send "-----------------------------------------------------"
-                stop
             set {mafia.%player%.isAttend} to true
             add "%player%" to {mafia.players::*}
             add 1 to {mafia.count}
 
+            # 7명이 되었을 때
+            if {mafia.count} is 7:
+                broadcast "마피아 참가 인원이 7명이 되었습니다!"
+                broadcast "/마피아 참가"
             # 8명이 되었을 때
             if {mafia.count} is 8:
+                broadcast "마피아가 시작됩니다."
+                broadcast "/마피아 채널 입장 <- 구경 가능"
                 execute console command "/mfstart"
             stop
+        if arg 1 is "정보":
+            send "-----------------------------------------------------"
+            send "마피아 참가자 명단 (%{mafia.count}%/8) - 8명이 되면 시작합니다!"
+            loop all players:
+                if {mafia.%loop-player%.isAttend} is true:
+                    send "- %loop-player%"
+            send "-----------------------------------------------------"
+            stop
         send "-----------------------------------------------------"
-        send "/마피아 채널 입장"
+        send "/마피아 채널 입장/퇴장"
         send "/마피아 참가"
         send "/마피아 참가 취소"
-        send "/마피아 참자 정보"
+        send "/마피아 정보"
         send "-----------------------------------------------------"
 
 command /mfinit:
@@ -319,7 +325,7 @@ command /mfclose <number>:
                 send "마피아가 종료 되었습니다." to loop-player
                 if arg 1 is 0:
                     send "결과 : &c마피아&f팀의 승리!!" to loop-player
-                else
+                else:
                     send "결과 : &e시민&f팀의 승리!!" to loop-player
                 send "마피아는" to loop-player
                 loop {mafia.players::*}:
@@ -331,7 +337,7 @@ command /mfclose <number>:
         loop {mafia.players::*}:
             set {_p} to "%loop-value%" parsed as player
 
-            send "-----------------------------------------------------" to loop-player
+            send "-----------------------------------------------------" to {_p}
             if {mafia.jobs::%loop-index%} is 1:
                 if arg 1 is 0:
                     # SkRayFall 에드온 필요
@@ -359,7 +365,7 @@ command /mfclose <number>:
                     # SkRayFall 에드온 필요
                     # send {_p} title "&c승리!" with subtitle "&f시민의 승리" for 5 seconds
                     send "&9승리!" to {_p}
-            send "-----------------------------------------------------" to loop-player
+            send "-----------------------------------------------------" to {_p}
         
         execute console command "/mfinit"
 
