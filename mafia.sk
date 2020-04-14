@@ -162,15 +162,15 @@ command /mfvote:
                 send "/투표" to loop-player
                 send "-----------------------------------------------------" to loop-player
         
-        set {_bar} to skellett new bossbar
-        set skellett title of bossbar {_bar} to "남은 투표 시간 : 300초"
-        set skellett progress of bossbar {_bar} to 1 
+        set {mafia.bar} to skellett new bossbar
+        set skellett title of bossbar {mafia.bar} to "남은 투표 시간 : 300초"
+        set skellett progress of bossbar {mafia.bar} to 1 
         set {mafia.denominator} to 300
         set {mafia.numerator} to {mafia.denominator}
 
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                skellett add loop-player to bossbar {_bar}
+                skellett add loop-player to bossbar {mafia.bar}
 
         wait 5 minutes
         execute console command "/mfvoteclose"
@@ -242,15 +242,15 @@ command /mfnight:
                 send "/마피아직업" to loop-player
                 send "-----------------------------------------------------" to loop-player
 
-        set {_bar} to skellett new bossbar
-        set skellett title of bossbar {_bar} to "남은 밤 시간 : 60초"
-        set skellett progress of bossbar {_bar} to 1 
+        set {mafia.bar} to skellett new bossbar
+        set skellett title of bossbar {mafia.bar} to "남은 밤 시간 : 60초"
+        set skellett progress of bossbar {mafia.bar} to 1 
         set {mafia.denominator} to 60
         set {mafia.numerator} to {mafia.denominator}
 
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                skellett add loop-player to bossbar {_bar}
+                skellett add loop-player to bossbar {mafia.bar}
         
         wait 1 minutes
         execute console command "/mfday"
@@ -469,21 +469,21 @@ on inventory click:
 
 every 1 seconds:
     # 보스바 타이머
-    if {_bar} is set:
+    if {mafia.bar} is set:
         remove 1 from {mafia.numerator}
-        set skellett progress of bossbar {_bar} to {mafia.numerator} / {mafia.denominator} 
+        set skellett progress of bossbar {mafia.bar} to {mafia.numerator} / {mafia.denominator} 
 
         if {mafia.isNight} is true:
-            set skellett title of bossbar {_bar} to "남은 밤 시간 : %{mafia.numerator}%초"
+            set skellett title of bossbar {mafia.bar} to "남은 밤 시간 : %{mafia.numerator}%초"
         if {mafia.isVote} is true:
-            set skellett title of bossbar {_bar} to "남은 투표 시간 : %{mafia.numerator}%초"
+            set skellett title of bossbar {mafia.bar} to "남은 투표 시간 : %{mafia.numerator}%초"
 
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                skellett add loop-player to bossbar {_bar}
+                skellett add loop-player to bossbar {mafia.bar}
                 if {mafia.numerator} <= 0:
-                    remove loop-player from bossbar {_bar}
-                    clear {_bar}
+                    remove loop-player from bossbar {mafia.bar}
+                    clear {mafia.bar}
 
 on chat:
     if {mafia.%player%.isChat} is true:
