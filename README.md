@@ -15,7 +15,7 @@
 
 <br>
 
-## ※ 스크립트 목록
+## ※ 카지노 스크립트 목록
 > path : **/(minecraft_server_folder)/plugin/skript/scripts/**
 
 | 이름               | 설명                                          |
@@ -28,3 +28,10 @@
 | finder.sk          | 보물찾기                                      |
 | blackjack.sk       | 블랙잭                                        |
 | lotto.sk           | 로또                                          |
+
+<br>
+
+## ※ 그밖의 스크립트 목록
+| 이름     | 설명        |
+|----------|-------------|
+| mafia.sk | 마피아 게임 |
