@@ -62,10 +62,12 @@ command /mfinit:
             set {mafia.jobs::%loop-value%} to 0
         set {mafia.isStart} to false
         set {mafia.isNight} to false
-        set {mafia.isVote}  to false
-        set {mafia.count}   to 0
-        set {mafia.mcount}  to 2
-        set {mafia.ccount}  to 6
+        set {mafia.isVote} to false
+        set {mafia.count} to 0
+        set {mafia.mcount} to 2
+        set {mafia.ccount} to 6
+        set {mafia.numerator} to 0
+        set {mafia.denominator} to 0
         
         loop all players:
             set {mafia.%loop-player%.isAttend} to false
@@ -217,7 +219,6 @@ command /mfnight:
             stop
         
         set {mafia.isNight} to true
-
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
                 set {mafia.%loop-player%.isClick} to false
