@@ -46,7 +46,7 @@ command /마피아 [<text>] [<text>]:
                 if {mafia.count} is 8:
                     broadcast "10초 뒤 마피아가 시작됩니다."
                     broadcast "10초안에 채널에 입장하지 않은 경우 정상적인 진행이 불가능합니다."
-                    broadcast "/마피아 채널 입장 <- 구경 가능"
+                    broadcast "/마피아 채널 입장 ( 구경 가능 )"
                     wait 10 seconds
                     execute console command "/mfstart"
             stop
