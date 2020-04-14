@@ -14,6 +14,7 @@ variables:
     {mafia.denominator} = 0
 
 command /마피아 [<text>] [<text>]:
+    aliases: /akvldk
     trigger:
         if arg 1 is "채널":
             if arg 2 is "입장":
@@ -239,7 +240,7 @@ command /mfnight:
                 send "밤이 되었습니다." to loop-player
                 send "1분동안 각자 직업에 맞는 행동을 해주시길 바랍니다." to loop-player
                 send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to loop-player
-                send "/마피아직업" to loop-player
+                send "/직업" to loop-player
                 send "-----------------------------------------------------" to loop-player
 
         set {mafia.bar} to skellett new bossbar
@@ -375,6 +376,7 @@ command /mfclose <number>:
         execute console command "/mfinit"
 
 command /투표:
+    aliases: /xnvy
     trigger:
         if {mafia.%player%.jobCode} is 4:
             send "권한이 없습니다."
@@ -395,7 +397,8 @@ command /투표:
                 set {_p} to "%loop-value%" parsed as player
                 set slot {mafia.click_format::%{loop-index}%} of current inventory of player to skull of {_p} named "&f%loop-value%"
 
-command /마피아직업:
+command /직업:
+    aliases: /wlrdjq
     trigger:
         if {mafia.%player%.jobCode} is 4:
             send "유령은 권한이 없습니다."
