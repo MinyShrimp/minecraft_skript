@@ -14,6 +14,7 @@
 | Skript.jar     | 스크립트 플러그인 |
 | Skellette.jar  | 에드온            |
 | SkQuery.jar    | 에드온            |
+| SkRayFall.jar  | 에드온            |
 | SkChoke.jar    | 에드온            |
 
 <br>

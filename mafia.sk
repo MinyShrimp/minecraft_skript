@@ -29,12 +29,12 @@ command /마피아 [<text>] [<text>]:
                 remove "%player%" from {mafia.players::*}
                 stop
             if arg 2 is "정보":
-                send "------------------------"
+                send "-----------------------------------------------------"
                 send "마피아 참가자 명단 (%{mafia.count}%/8) - 8명이 되면 시작합니다!"
                 loop all players:
                     if {mafia.%loop-player%.isAttend} is true:
                         send "- %loop-player%"
-                send "------------------------"
+                send "-----------------------------------------------------"
                 stop
             set {mafia.%player%.isAttend} to true
             add "%player%" to {mafia.players::*}
@@ -44,12 +44,12 @@ command /마피아 [<text>] [<text>]:
             if {mafia.count} is 8:
                 execute console command "/mfstart"
             stop
-        send "------------------------"
+        send "-----------------------------------------------------"
         send "/마피아 채널 입장"
         send "/마피아 참가"
         send "/마피아 참가 취소"
         send "/마피아 참자 정보"
-        send "------------------------"
+        send "-----------------------------------------------------"
 
 command /mfinit:
     trigger:
@@ -108,7 +108,7 @@ command /mfday:
         
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 send "낮이 되었습니다" to loop-player
                 if {_a} is {_b}:
                     send "의사의 도움으로 %{mafia.players::%{_a}%}%님이 치명상에서 벗어났습니다." to loop-player
@@ -121,7 +121,7 @@ command /mfday:
                             remove 1 from {mafia.ccount}
                     else:
                         send "아무일도 일어나지 않았습니다." to loop-player
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
         
         if {mafia.ccount} <= 0:
             execute console command "/mfclose 0"
@@ -142,12 +142,12 @@ command /mfvote:
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
                 set {mafia.%loop-player%.isClick} to false
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 send "투표 시간입니다." to loop-player
                 send "5분동안 상의 후에 각자 마피아로 의심가는 인물 한 명을 지목해주시길 바랍니다." to loop-player
                 send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to loop-player
                 send "/투표" to loop-player
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
         
         set {_bar} to skellett new bossbar
         set skellett title of bossbar {_bar} to "남은 투표 시간 : 300초"
@@ -184,7 +184,7 @@ command /mfvoteclose:
 
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 send "투표가 종료되었습니다." to loop-player
                 send "가장 득표율이 높은 [%{mafia.players::%{_t}%}%]님이 %{_t}%표로 사망하셨습니다." to loop-player
                 send "[%{mafia.players::%{_t}%}%]님은 " to loop-player
@@ -200,7 +200,7 @@ command /mfvoteclose:
                 if {mafia.%{_t}%.jobCode} is 3:
                     send "   [&f의사&f] 이었습니다" to loop-player
                     remove 1 from {mafia.ccount}
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 set {mafia.%{_t}%.jobCode} to 4
         
         if {mafia.ccount} <= 0:
@@ -222,12 +222,12 @@ command /mfnight:
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
                 set {mafia.%loop-player%.isClick} to false
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 send "밤이 되었습니다." to loop-player
                 send "1분동안 각자 직업에 맞는 행동을 해주시길 바랍니다." to loop-player
                 send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to loop-player
                 send "/마피아직업" to loop-player
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
 
         set {_bar} to skellett new bossbar
         set skellett title of bossbar {_bar} to "남은 밤 시간 : 60초"
@@ -280,7 +280,7 @@ command /mfstart:
                 add 1 to {_c}
                 
         loop 8 times:
-            send "------------------------"
+            send "-----------------------------------------------------"
             send "마피아가 시작되었습니다!!"
             loop {mafia.players::*}:
                 set {_p} to "%loop-value-2%" parsed as player
@@ -302,7 +302,7 @@ command /mfstart:
                     send "하루에 한 번씩 특정인을 살릴 수 있습니다." to {_p}
                     send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
                     send "/마피아직업" to {_p}
-            send "------------------------"
+            send "-----------------------------------------------------"
 
         set {mafia.isStart} to true
         execute console command "/mfnight"
@@ -315,33 +315,51 @@ command /mfclose <number>:
     
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
                 send "마피아가 종료 되었습니다." to loop-player
+                if arg 1 is 0:
+                    send "결과 : &c마피아&f팀의 승리!!" to loop-player
+                else
+                    send "결과 : &e시민&f팀의 승리!!" to loop-player
                 send "마피아는" to loop-player
                 loop {mafia.players::*}:
                     if {mafia.jobs::%loop-index%} is 1:
                         send "- %loop-value-2%" to loop-player-1
                 send "이었습니다!!" to loop-player
-                send "------------------------" to loop-player
+                send "-----------------------------------------------------" to loop-player
 
         loop {mafia.players::*}:
             set {_p} to "%loop-value%" parsed as player
 
+            send "-----------------------------------------------------" to loop-player
             if {mafia.jobs::%loop-index%} is 1:
                 if arg 1 is 0:
-                    send {_p} title "&9승리!" with subtitle "&f마피아의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&9승리!" with subtitle "&f마피아의 승리" for 5 seconds
+                    send "&9승리!" to {_p}
                 else:
-                    send {_p} title "&c패배.." with subtitle "&f시민의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&c패배.." with subtitle "&f시민의 승리" for 5 seconds
+                    send "&c패배.." to {_p}
             else if {mafia.jobs::%loop-index%} is 4:
                 if arg 1 is 0:
-                    send {_p} title "&0결과" with subtitle "&f마피아의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&0결과" with subtitle "&f마피아의 승리" for 5 seconds
+                    send "결과: 마피아팀의 승리" to {_p}
                 else:
-                    send {_p} title "&0결과" with subtitle "&f시민의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&0결과" with subtitle "&f시민의 승리" for 5 seconds
+                    send "결과: 마피아팀의 승리" to {_p}
             else:   
                 if arg 1 is 0:
-                    send {_p} title "&9패배.." with subtitle "&f마피아의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&9패배.." with subtitle "&f마피아의 승리" for 5 seconds
+                    send "&c패배.." to {_p}
                 else:
-                    send {_p} title "&c승리!" with subtitle "&f시민의 승리" for 5 seconds
+                    # SkRayFall 에드온 필요
+                    # send {_p} title "&c승리!" with subtitle "&f시민의 승리" for 5 seconds
+                    send "&9승리!" to {_p}
+            send "-----------------------------------------------------" to loop-player
         
         execute console command "/mfinit"
 
@@ -398,9 +416,9 @@ on inventory click:
         loop {mafia.click_format::*}:
             if clicked raw slot is loop-value:
                 set {mafia.%loop-value%.click_player} to loop-index
-                send "------------------------"
+                send "-----------------------------------------------------"
                 send "[%{mafia.players::%loop-index%}%]님을 지목하셨습니다."
-                send "------------------------"
+                send "-----------------------------------------------------"
 
     if iname contains "경찰":
         cancel event
@@ -409,7 +427,7 @@ on inventory click:
                 if {mafia.%{mafia.players::%loop-index%}%.jobCode} is 2:
                     send "본인을 선택하셨습니다. 다시 선택해주세요."
                     stop
-                send "------------------------"
+                send "-----------------------------------------------------"
                 send "[%{mafia.players::%loop-index%}%]님을 지목하셨습니다."
                 send "[%{mafia.players::%loop-index%}%]님은 "
                 if {mafia.%{mafia.players::%loop-index%}%.jobCode} is 0:
@@ -418,25 +436,25 @@ on inventory click:
                     send "   [&c마피아&f] 입니다"
                 else if {mafia.%{mafia.players::%loop-index%}%.jobCode} is 3:
                     send "   [&f의사&f] 입니다"
-                send "------------------------"
+                send "-----------------------------------------------------"
 
     if iname contains "의사":
         cancel event
         loop {mafia.click_format::*}:
             if clicked raw slot is loop-value:
                 set {mafia.%loop-value%.click_player} to loop-index
-                send "------------------------"
+                send "-----------------------------------------------------"
                 send "[%{mafia.players::%loop-index%}%]님을 지목하셨습니다."
-                send "------------------------"
+                send "-----------------------------------------------------"
     
     if iname contains "투표":
         cancel event
         loop {mafia.click_format::*}:
             if clicked raw slot is loop-value:
                 set {mafia.%loop-value%.click_player} to loop-index
-                send "------------------------"
+                send "-----------------------------------------------------"
                 send "[%{mafia.players::%loop-index%}%]님을 지목하셨습니다."
-                send "------------------------"
+                send "-----------------------------------------------------"
 
 every 1 seconds:
     # 보스바 타이머
