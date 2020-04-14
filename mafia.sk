@@ -434,6 +434,14 @@ every 1 seconds:
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
                 skellett add player to bossbar {_bar}
+                if {_numerator} == 59:
+                    send "59초 남았습니다." to loop-player
+                if {_numerator} == 30:
+                    send "30초 남았습니다." to loop-player
+                if {_numerator} == 15:
+                    send "15초 남았습니다." to loop-player
+                if {_numerator} <= 5:
+                    send "%{_numerator}%" to loop-player
                 if {_numerator} <= 0:
                     remove loop-player from bossbar {_bar}
                     clear {_bar}
