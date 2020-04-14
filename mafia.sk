@@ -398,23 +398,29 @@ command /투표:
 command /마피아직업:
     trigger:
         if {mafia.%player%.jobCode} is 4:
-            send "권한이 없습니다."
+            send "유령은 권한이 없습니다."
             stop
         if {mafia.%player%.jobCode} is 0:
-            send "권한이 없습니다."
+            send "당신은 &e시민&f입니다."
             stop
         if {mafia.isStart} is false:
             send "시작하지 않았습니다."
             stop
-        if {mafia.isNight} is false:
-            send "밤이 아닙니다."
-            stop
         
         if {mafia.%player%.jobCode} is 1:
+            send "당신은 &c마피아&f입니다."
+            if {mafia.isNight} is false:
+                stop
             open chest with 5 rows named "마피아" to player
         if {mafia.%player%.jobCode} is 2:
+            send "당신은 &9경찰&f입니다."
+            if {mafia.isNight} is false:
+                stop
             open chest with 5 rows named "경찰" to player
         if {mafia.%player%.jobCode} is 3:
+            send "당신은 &f의사&f입니다."
+            if {mafia.isNight} is false:
+                stop
             open chest with 5 rows named "의사" to player
         loop {mafia.players::*}:
             if {mafia.%loop-value%.jobCode} is not 4:
