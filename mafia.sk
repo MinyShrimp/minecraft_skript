@@ -10,6 +10,8 @@ variables:
     {mafia.count} = 0
     {mafia.mcount} = 2
     {mafia.ccount} = 6
+    {mafia.numerator} = 0
+    {mafia.denominator} = 0
 
 command /마피아 [<text>] [<text>]:
     trigger:
@@ -148,8 +150,12 @@ command /mfvote:
         set {_bar} to skellett new bossbar
         set skellett title of bossbar {_bar} to "투표"
         set skellett progress of bossbar {_bar} to 1 
-        set {_denominator} to 300
-        set {_numerator} to {_denominator}
+        set {mafia.denominator} to 300
+        set {mafia.numerator} to {mafia.denominator}
+
+        loop all players:
+            if {mafia.%loop-player%.isChat} is true:
+                skellett add loop-player to bossbar {_bar}
 
         wait 5 minutes
         execute console command "/mfvoteclose"
@@ -225,8 +231,12 @@ command /mfnight:
         set {_bar} to skellett new bossbar
         set skellett title of bossbar {_bar} to "밤"
         set skellett progress of bossbar {_bar} to 1 
-        set {_denominator} to 60
-        set {_numerator} to {_denominator}
+        set {mafia.denominator} to 60
+        set {mafia.numerator} to {mafia.denominator}
+
+        loop all players:
+            if {mafia.%loop-player%.isChat} is true:
+                skellett add loop-player to bossbar {_bar}
         
         wait 1 minutes
         execute console command "/mfday"
@@ -428,21 +438,21 @@ on inventory click:
 every 1 seconds:
     # 보스바 타이머
     if {_bar} is set:
-        remove 1 from {_numerator}
-        set skellett progress of bossbar {_bar} to {_numerator} / {_denominator} 
+        remove 1 from {mafia.numerator}
+        set skellett progress of bossbar {_bar} to {mafia.numerator} / {mafia.denominator} 
 
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
-                skellett add player to bossbar {_bar}
-                if {_numerator} == 59:
+                skellett add loop-player to bossbar {_bar}
+                if {mafia.numerator} == 59:
                     send "59초 남았습니다." to loop-player
-                if {_numerator} == 30:
+                if {mafia.numerator} == 30:
                     send "30초 남았습니다." to loop-player
-                if {_numerator} == 15:
+                if {mafia.numerator} == 15:
                     send "15초 남았습니다." to loop-player
-                if {_numerator} <= 5:
-                    send "%{_numerator}%" to loop-player
-                if {_numerator} <= 0:
+                if {mafia.numerator} <= 5:
+                    send "%{mafia.numerator}%" to loop-player
+                if {mafia.numerator} <= 0:
                     remove loop-player from bossbar {_bar}
                     clear {_bar}
 
