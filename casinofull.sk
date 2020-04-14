@@ -643,7 +643,7 @@ command /lotto:
 
 command /lottoreset:
     trigger:
-        if player has permission "casino.mc_shrimp":
+        if command sender is console:
             loop 9 times:
                 set {lotto.moneys::%loop-value%} to 0
                 set {lotto.pcounts::%loop-value%} to 0
@@ -1150,12 +1150,14 @@ on inventory click:
                     add {lotto.%player%.bat} to {lotto.batting}
                     add 1 to {lotto.pcounts::%loop-value%}
                     add "%player%" to {lotto.players::%loop-value%::*}
+                    set {lotto.%player%.choice} to loop-value
 
                     if {lotto.batting} >= {lotto.broadcastvalue}:
                         broadcast "로또 총 금액이 [$%{lotto.broadcastvalue}%]를 넘어섰습니다!!"
                         broadcast "확인: /도박메뉴 => 로또"
                         add 1000000 to {lotto.broadcastvalue}
 
+                    execute player command "/lotto"
                     exit 1 loop
                 else:
                     send "이미 [%{lotto.%player%.choice}%]번을 선택하셨습니다."
@@ -1165,9 +1167,9 @@ on inventory click:
             execute player command "/도박메뉴"
 
 # - slotmachine
-every 1 seconds in "wild1":
+every 1 seconds in "world":
     loop all players:
-        if loop-player is in world "wild1":
+        if loop-player is in world "world":
             if {slot.%loop-player%.isRun} is set:
                 if {slot.%loop-player%.count} is not set:
                     set {slot.%loop-player%.count} to 0
@@ -1219,7 +1221,7 @@ every 1 seconds in "wild1":
                 else:
                     add 1 to {slot.%loop-player%.count}
 # - lotto
-every 300 seconds in "wild1":
+every 300 seconds in "world":
     if {lotto.count} == 5:
         broadcast "-----------------------------------------------------"
         broadcast "%{lotto.round}%회차 로또 결과 30분전"
@@ -1272,6 +1274,7 @@ every 300 seconds in "wild1":
 
 on script load:
     set {mc_shrimp} to "mc_shrimp" parsed as player
+    execute console command "/lottoreset"
 
 on inventory close:
     if {cmenu.%player%.isOpen} is set:
