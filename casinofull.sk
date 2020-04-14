@@ -87,8 +87,8 @@ command /shclose:
                     close loop-player's inventory
                 if {finder.%loop-player%.isClick} is set:
                     close loop-player's inventory
-                if {blackjack.%player%.isClick} is set:
-                    execute player command "/bjreset"
+                if {blackjack.%loop-player%.isClick} is set:
+                    close loop-player's inventory
                 if {lotto.%player%.isOpen} is set:
                     close loop-player's inventory
         else:
@@ -536,12 +536,12 @@ command /bdealer:
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
-                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
-                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
         else:
             if {blackjack.%player%.dealer.addAll} > 21:
                 send "결과: &c플레이어 승"
@@ -549,12 +549,12 @@ command /bdealer:
                 add {_t} to player's money
                 remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
-                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             else if {blackjack.%player%.dealer.addAll} > {blackjack.%player%.addAll}:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
-                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             else if {blackjack.%player%.dealer.addAll} < {blackjack.%player%.addAll}:
                 send "결과: &c플레이어 승"
@@ -562,19 +562,19 @@ command /bdealer:
                 add {_t} to player's money
                 remove {_t} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원(&9+%{blackjack.%player%.bat}%&f)"
-                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             else if {blackjack.%player%.dealer.addAll} == {blackjack.%player%.addAll}:
                 send "결과: &e무승부"
                 add {blackjack.%player%.bat} to player's money
                 remove {blackjack.%player%.bat} from {balance.mc_shrimp.casino}
                 send "현재 잔액 [&e%player's money%&f]원"
-                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 지출금: &c%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             else:
                 send "결과: &9딜러 승"
                 send "현재 잔액 [&e%player's money%&f]원(&c-%{blackjack.%player%.bat}%&f)"
-                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                send "[블랙잭] 수입금: &9%{blackjack.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
         send "-----------------------------------------------------"
         set slot 49 of current inventory of player to cobwebs named "&e초기화"
         set {blackjack.%player%.isDoInit} to true
@@ -690,7 +690,7 @@ on inventory click:
                     remove {slot.%player%.bat} from player's money
                     set slot 7 of current inventory of player to air named "&e룰렛돌리기" with lore "돌아가는 중.."
 
-                    send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                    send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                 else:
                     send "소지 금액이 [%{slot.%player%.bat}%] 이하 입니다."
             else:
@@ -708,7 +708,7 @@ on inventory click:
 
             add {_o} to player's money
             add {_c} to {balance.mc_shrimp.casino}
-            send "[로또] 수입금: &9%{_c}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+            send "[로또] 수입금: &9%{_c}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
             send "전체 당첨금 %{oddeven.%player%.balance}%원 중 수수료 5%%를 제외한 &l&e%{_o}%원&r&f 이 지급되었습니다."
 
@@ -740,7 +740,7 @@ on inventory click:
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
 
-                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                                 add 1 to {oddeven.%player%.count}
 
@@ -756,7 +756,7 @@ on inventory click:
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
 
-                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
@@ -771,7 +771,7 @@ on inventory click:
                                 set {_b} to {oddeven.%player%.bat} * 2^{oddeven.%player%.count}
                                 add {_b} to {oddeven.%player%.balance}
                                 remove {_b} from {balance.mc_shrimp.casino}
-                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                                send "[홀짝] 지출금: &c%{_b}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                                 add 1 to {oddeven.%player%.count}
 
@@ -786,7 +786,7 @@ on inventory click:
                                 set {oddeven.%player%.count} to 0
                                 add {oddeven.%player%.balance} to {balance.mc_shrimp.casino}
                                 set {oddeven.%player%.balance} to 0
-                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                                send "[홀짝] 수입금: &9%{oddeven.%player%.balance}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                                 set slot 53 of current inventory of player to gold ingot named "&6현재 금액" with lore "&f0원"
                             stop
@@ -822,7 +822,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-EASY] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-EASY] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 9 times:
                             set {_s} to loop-number
@@ -838,7 +838,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-EASY] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-EASY] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -865,7 +865,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-NORMAL] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-NORMAL] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 27 times:
                             set {_s} to loop-number
@@ -881,7 +881,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-NORMAL] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-NORMAL] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -908,7 +908,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-HARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-HARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 45 times:
                             set {_s} to loop-number
@@ -924,7 +924,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-HARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-HARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -951,7 +951,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-VERYHARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-VERYHARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 45 times:
                             set {_s} to loop-number
@@ -969,7 +969,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-VERYHARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-VERYHARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -1143,8 +1143,8 @@ on inventory click:
             set {_s} to loop-value
             add 8 to {_s}
             if clicked raw slot is {_s}:
-                if {lotto.%loop-player%.isChoice} is false:
-                    set {lotto.%loop-player%.isChoice} to true
+                if {lotto.%player%.isChoice} is false:
+                    set {lotto.%player%.isChoice} to true
                     
                     add {lotto.%player%.bat} to {lotto.moneys::%loop-value%}
                     add {lotto.%player%.bat} to {lotto.batting}
@@ -1201,19 +1201,19 @@ every 1 seconds in "wild1":
                             add {slot.%loop-player%.bat} to loop-player's money
                             remove {slot.%loop-player%.bat} from {balance.mc_shrimp.casino}
                             message "한번더!" to loop-player
-                            send "[슬롯] 지출금: &c%{slot.%loop-player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[슬롯] 지출금: &c%{slot.%loop-player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else if {slot.%loop-player%.numbers::1} == 2:
                             set {_a} to 15 * {slot.%loop-player%.bat}
                             add {_a} to loop-player's money
                             remove {_a} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 15배 슬롯에 당첨되었습니다!!"
-                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else if {slot.%loop-player%.numbers::1} == 3:
                             set {_a} to 150 * {slot.%loop-player%.bat}
                             add {_a} to loop-player's money
                             remove {_a} from {balance.mc_shrimp.casino}
                             broadcast "[%loop-player%]님이 150배 슬롯에 당첨되었습니다!!!"
-                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[슬롯] 지출금: &c%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             message "꽝" to loop-player
                 else:
@@ -1246,7 +1246,7 @@ every 300 seconds in "wild1":
             add {_a} to {balance.mc_shrimp.casino}
             set {_su} to 0
             set {_money} to 0
-            send "[로또] 수입금: &9%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+            send "[로또] 수입금: &9%{_a}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
         else:
             set {_b} to {lotto.batting} * 0.95
             set {_t} to {lotto.batting} * 0.05
@@ -1256,7 +1256,7 @@ every 300 seconds in "wild1":
             set {_su} to {_t} / {lotto.pcounts::%{_result}%}
 
             add {_a} to {balance.mc_shrimp.casino}  # 실 이용료 4%
-            send "[로또] 수입금: %{_a}% / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+            send "[로또] 수입금: %{_a}% / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
             loop {lotto.players::%{_result}%::*}:
                 add {_money} to {loop-value}'s balance
 
@@ -1269,6 +1269,9 @@ every 300 seconds in "wild1":
         add 1 to {lotto.round}
     else:
         add 1 to {lotto.count}
+
+on script load:
+    set {mc_shrimp} to "mc_shrimp" parsed as player
 
 on inventory close:
     if {cmenu.%player%.isOpen} is set:

@@ -204,7 +204,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-EASY] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-EASY] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 9 times:
                             set {_s} to loop-number
@@ -220,7 +220,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-EASY] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-EASY] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -247,7 +247,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-NORMAL] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-NORMAL] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 27 times:
                             set {_s} to loop-number
@@ -263,7 +263,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-NORMAL] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-NORMAL] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -290,7 +290,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-HARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-HARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 45 times:
                             set {_s} to loop-number
@@ -306,7 +306,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-HARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-HARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -333,7 +333,7 @@ on inventory click:
                     if player's balance >= {finder.%player%.bat}:
                         remove {finder.%player%.bat} from player's balance
                         add {finder.%player%.bat} to {balance.mc_shrimp.casino}
-                        send "[보물찾기-VERYHARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                        send "[보물찾기-VERYHARD] 수입금: &9%{finder.%player%.bat}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
 
                         loop 45 times:
                             set {_s} to loop-number
@@ -351,7 +351,7 @@ on inventory click:
 
                             add {_t} to player's balance
                             remove {_t} from {balance.mc_shrimp.casino}
-                            send "[보물찾기-VERYHARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to mc_shrimp
+                            send "[보물찾기-VERYHARD] 지출금: &c%{_t}%&f / 현재 잔액: %{balance.mc_shrimp.casino}%" to {mc_shrimp}
                         else:
                             send "꽝.."
 
@@ -373,6 +373,9 @@ on inventory close:
     if {finder.%player%.isClick} is set:
         clear {finder.%player%.isClick}
 
+on script load:
+    set {mc_shrimp} to "mc_shrimp" parsed as player
+    
 on script unload:
     loop all players:
         if {finder.%loop-player%.isClick} is set:

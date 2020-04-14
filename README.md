@@ -7,11 +7,14 @@
 ## ※ 플러그인 목록
 > path : **/(minecraft_server_folder)/plugin/**
 
-| 이름          | 설명              |
-|---------------|-------------------|
-| Skript.jar    | 스크립트 플러그인 |
-| Skellette.jar | 에드온            |
-| SkChoke.jar   | 에드온            |
+| 이름           | 설명              |
+|----------------|-------------------|
+| EssensialX.jar | 에센셜 플러그인   |
+| Vault.jar      | 경제 플러그인     |
+| Skript.jar     | 스크립트 플러그인 |
+| Skellette.jar  | 에드온            |
+| SkQuery.jar    | 에드온            |
+| SkChoke.jar    | 에드온            |
 
 <br>
 
