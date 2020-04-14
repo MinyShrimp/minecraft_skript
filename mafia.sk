@@ -17,37 +17,44 @@ command /마피아 [<text>] [<text>]:
     trigger:
         if arg 1 is "채널":
             if arg 2 is "입장":
+                send "마피아 채널에 입장했습니다."
                 set {mafia.%player%.isChat} to true
                 stop
             if arg 2 is "퇴장":
+                send "마피아 채널에 퇴장했습니다."
                 set {mafia.%player%.isChat} to false
                 stop
         if arg 1 is "참가":
             if arg 2 is "취소":
-                set {mafia.%player%.isAttend} to false
-                remove 1 from {mafia.count}
-                remove "%player%" from {mafia.players::*}
+                if {mafia.%player%.isAttend} is true:
+                    send "마피아 게임에 참가 취소했습니다."
+                    set {mafia.%player%.isAttend} to false
+                    remove 1 from {mafia.count}
+                    remove "%player%" from {mafia.players::*}
                 stop
-            set {mafia.%player%.isAttend} to true
-            add "%player%" to {mafia.players::*}
-            add 1 to {mafia.count}
+            if {mafia.%player%.isAttend} is false:
+                send "마피아 게임에 참가했습니다."
+                set {mafia.%player%.isAttend} to true
+                add "%player%" to {mafia.players::*}
+                add 1 to {mafia.count}
 
-            # 7명이 되었을 때
-            if {mafia.count} is 7:
-                broadcast "마피아 참가 인원이 7명이 되었습니다!"
-                broadcast "/마피아 참가"
-            # 8명이 되었을 때
-            if {mafia.count} is 8:
-                broadcast "마피아가 시작됩니다."
-                broadcast "/마피아 채널 입장 <- 구경 가능"
-                execute console command "/mfstart"
+                # 7명이 되었을 때
+                if {mafia.count} is 7:
+                    broadcast "마피아 참가 인원이 7명이 되었습니다!"
+                    broadcast "/마피아 참가"
+                # 8명이 되었을 때
+                if {mafia.count} is 8:
+                    broadcast "10초 뒤 마피아가 시작됩니다."
+                    broadcast "10초안에 채널에 입장하지 않은 경우 정상적인 진행이 불가능합니다."
+                    broadcast "/마피아 채널 입장 <- 구경 가능"
+                    wait 10 seconds
+                    execute console command "/mfstart"
             stop
         if arg 1 is "정보":
             send "-----------------------------------------------------"
             send "마피아 참가자 명단 (%{mafia.count}%/8) - 8명이 되면 시작합니다!"
-            loop all players:
-                if {mafia.%loop-player%.isAttend} is true:
-                    send "- %loop-player%"
+            loop {mafia.players::*}:
+                send "- %loop-value%"
             send "-----------------------------------------------------"
             stop
         send "-----------------------------------------------------"
@@ -284,31 +291,29 @@ command /mfstart:
                 set {mafia.jobs::%{_x}%} to 3
                 set {mafia.%{mafia.players::%{_x}%}%.jobCode} to 3
                 add 1 to {_c}
-                
-        loop 8 times:
-            send "-----------------------------------------------------"
-            send "마피아가 시작되었습니다!!"
-            loop {mafia.players::*}:
-                set {_p} to "%loop-value-2%" parsed as player
-                if {mafia.jobs::%loop-index%} is 0:
-                    send "당신의 직업은 [&e시민&f]입니다." to {_p}
-                if {mafia.jobs::%loop-index%} is 1:                            
-                    send "당신의 직업은 [&c마피아&f]입니다." to {_p}
-                    send "서로 마피아끼리 채팅으로 확인하신 후 투표 진행해주세요." to {_p}
-                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                    send "서로 다른 사람을 지목한 경우 둘 중 랜덤한 인물에게 적용됩니다." to {_p}
-                    send "/마피아직업" to {_p}
-                if {mafia.jobs::%loop-index%} is 2:
-                    send "당신의 직업은 [&9경찰&f]입니다." to {_p}
-                    send "하루에 한 번씩 특정인의 직업을 알 수 있습니다." to {_p}
-                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                    send "/마피아직업" to {_p}
-                if {mafia.jobs::%loop-index%} is 3:
-                    send "당신의 직업은 [의사]입니다." to {_p}
-                    send "하루에 한 번씩 특정인을 살릴 수 있습니다." to {_p}
-                    send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
-                    send "/마피아직업" to {_p}
-            send "-----------------------------------------------------"
+        
+        loop all players:
+            if {mafia.%loop-player%.isChat} is true:
+                send "-----------------------------------------------------" to loop-player
+                send "마피아가 시작되었습니다!!" to loop-player
+                loop {mafia.players::*}:
+                    set {_p} to "%loop-value-2%" parsed as player
+                    if {mafia.jobs::%loop-index%} is 0:
+                        send "당신의 직업은 [&e시민&f]입니다." to {_p}
+                    if {mafia.jobs::%loop-index%} is 1:                            
+                        send "당신의 직업은 [&c마피아&f]입니다." to {_p}
+                        send "서로 마피아끼리 채팅으로 확인하신 후 투표 진행해주세요." to {_p}
+                        send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                        send "서로 다른 사람을 지목한 경우 둘 중 랜덤한 인물에게 적용됩니다." to {_p}
+                    if {mafia.jobs::%loop-index%} is 2:
+                        send "당신의 직업은 [&9경찰&f]입니다." to {_p}
+                        send "하루에 한 번씩 특정인의 직업을 알 수 있습니다." to {_p}
+                        send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                    if {mafia.jobs::%loop-index%} is 3:
+                        send "당신의 직업은 [의사]입니다." to {_p}
+                        send "하루에 한 번씩 특정인을 살릴 수 있습니다." to {_p}
+                        send "선택 후엔 되돌릴 수 없으니 신중하게 선택해주시길 바랍니다." to {_p}
+                send "-----------------------------------------------------" to loop-player
 
         set {mafia.isStart} to true
         execute console command "/mfnight"
@@ -476,14 +481,6 @@ every 1 seconds:
         loop all players:
             if {mafia.%loop-player%.isChat} is true:
                 skellett add loop-player to bossbar {_bar}
-                if {mafia.numerator} is 59:
-                    send "59초 남았습니다." to loop-player
-                if {mafia.numerator} is 30:
-                    send "30초 남았습니다." to loop-player
-                if {mafia.numerator} is 15:
-                    send "15초 남았습니다." to loop-player
-                if {mafia.numerator} <= 5:
-                    send "%{mafia.numerator}%" to loop-player
                 if {mafia.numerator} <= 0:
                     remove loop-player from bossbar {_bar}
                     clear {_bar}
