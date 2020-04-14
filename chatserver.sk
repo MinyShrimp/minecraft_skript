@@ -23,7 +23,7 @@ on inventory click:
             close player's inventory
 
             loop all players:
-            if {cs.%player%.channel} == 0:
+            if {cs.%player%.channel} is 0:
                 set {_p} to "%player%"
                 send "&f[&c%player%]&f님이 일반채팅방에 입장했습니다." to {_p}
 
@@ -33,14 +33,14 @@ on inventory click:
             close player's inventory
 
             loop all players:
-            if {cs.%player%.channel} == 1:
+            if {cs.%player%.channel} is 1:
                 set {_p} to "%player%"
                 send "&f[&c%player%]&f님이 도박채팅방에 입장했습니다." to {_p}
             
 on chat:
-    if {cs.%player%.channel} == 1:
+    if {cs.%player%.channel} is 1:
         cancel event
         loop all players:
-            if {cs.%loop-player%.channel} == 1:
+            if {cs.%loop-player%.channel} is 1:
                 set {_p} to "%loop-player%"
                 send "&f[&cS&f]%loop-player%: %message%" to {_p}
